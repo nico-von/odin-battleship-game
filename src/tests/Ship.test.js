@@ -41,7 +41,7 @@ describe("Ship should have a hit function that increases number of hits by 1 in 
     })
 }) 
 
-describe ("Ship has a isSunk function that see if ship sunk based on length and hits received", () => {
+describe ("Ship has an isSunk function that see if ship sunk based on length and hits received", () => {
     test("Ship has isSunk() function", () => {
         const newShip = new Ship();
         expect(typeof newShip.isSunk === "function").toBeTruthy();
