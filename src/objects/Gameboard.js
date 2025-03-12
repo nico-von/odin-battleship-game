@@ -1,3 +1,5 @@
+import { Ship } from "./Ship";
+
 export class Gameboard {
     constructor(){
         this.width = 0;
@@ -13,5 +15,9 @@ export class Coordinate{
     constructor() {
         this.hit = false;
         this.ship = null;
+    }
+
+    get miss(){
+        return !(this.hit && this.ship instanceof Ship);
     }
 }

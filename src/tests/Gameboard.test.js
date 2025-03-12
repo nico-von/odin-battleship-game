@@ -1,4 +1,5 @@
 import { Gameboard, Coordinate } from "../objects/Gameboard";
+import { Ship } from "../objects/Ship";
 
 test("Gameboard class should exist", () => {
     expect(Gameboard).toBeDefined();
@@ -63,5 +64,17 @@ describe("Coordinate properties", () => {
     })
     test("Coordinate ship property must be initiated to null", () => {
         expect(coordinate.ship).toBe(null);
+    })
+    test("Coordinate object must have miss property", ()=>{
+        expect(coordinate.miss).toBeDefined();
+    })
+    test("Coordinate miss must return true if hit is true and ship is not a Ship instance", () => {
+        coordinate.ship = 0;
+        expect(coordinate.miss).toBeTruthy();
+    })
+    test("Coordinate miss must return false if hit is true and ship is a Ship instance", () => {
+        coordinate.ship = new Ship();
+        coordinate.hit = true;
+        expect(coordinate.miss).toBeFalsy();
     })
 })
