@@ -42,13 +42,16 @@ describe("Ship should have a hit function that increases number of hits by 1 in 
 }) 
 
 describe ("Ship has an isSunk function that see if ship sunk based on length and hits received", () => {
+    let newShip;
+    beforeEach(() => {
+        newShip = new Ship();
+    })
+
     test("Ship has isSunk() function", () => {
-        const newShip = new Ship();
         expect(typeof newShip.isSunk === "function").toBeTruthy();
     })
 
     test("Ship isSunk() returns false when length is higher than hits", () => {
-        const newShip = new Ship();
         newShip.length = 2;
         newShip.hit();
         const isSunk = newShip.isSunk();
@@ -56,7 +59,6 @@ describe ("Ship has an isSunk function that see if ship sunk based on length and
     })
 
     test("Ship isSunk() returns true when length is lower or equal to hits", () => {
-        const newShip = new Ship();
         const randomNumber = Math.floor(Math.random() * 10);
         newShip.length = randomNumber; 
         for(let i = 0; i < randomNumber; i++) {
