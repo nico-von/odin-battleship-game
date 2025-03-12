@@ -6,6 +6,16 @@ export class Gameboard {
         this.height = 0;
     }
 
+    buildGrid(){
+        this.grid = [];
+        for(let i = 0; i < this.height; i++){
+            this.grid.push([])
+            for(let j = 0; j < this.width; j++) {
+                this.grid[i].push(new Coordinate);
+            }
+        }
+    }
+
     get size(){
         return this.width * this.height;
     }

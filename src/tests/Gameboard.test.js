@@ -45,6 +45,28 @@ describe("Gameboard properties", () => {
         gameboard.height = 3;
         expect(gameboard.size).toBe(gameboard.width * gameboard.height);
     })
+
+    test("Gameboard must have buildGrid function", () => {
+        expect(typeof gameboard.buildGrid).toBe("function");
+    })
+
+    test("Grid x,y axis must be the same as its width ,height after buildGrid()", () => {
+        gameboard.width = 10;
+        gameboard.height = 15;
+        gameboard.buildGrid();
+        expect(gameboard.grid[0].length).toBe(gameboard.width);
+        expect(gameboard.grid.length).toBe(gameboard.height);
+    })
+
+    test("Grid must have Coordinate objects as its contents",()=>{
+        gameboard.width = 20;
+        gameboard.height = 25;
+        gameboard.buildGrid();
+        expect(gameboard.grid[0][15] instanceof Coordinate).toBeTruthy();
+        expect(gameboard.grid[10][11] instanceof Coordinate).toBeTruthy();
+        expect(gameboard.grid[0][0] instanceof Coordinate).toBeTruthy();
+    })
+
 })
 
 describe("Coordinate properties", () => {
