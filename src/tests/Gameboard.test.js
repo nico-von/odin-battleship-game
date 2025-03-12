@@ -67,6 +67,13 @@ describe("Gameboard properties", () => {
         expect(gameboard.grid[0][0] instanceof Coordinate).toBeTruthy();
     })
 
+    test("Gameboard must accept params of width, height on init and have Coordinates as contents of grid matrix", ()=>{
+        gameboard = new Gameboard(10,10);
+        expect(gameboard.grid[0][1] instanceof Coordinate).toBeTruthy();
+        expect(gameboard.grid[5][6] instanceof Coordinate).toBeTruthy();
+        expect(gameboard.grid[6][9] instanceof Coordinate).toBeTruthy();
+    });
+
 })
 
 describe("Coordinate properties", () => {

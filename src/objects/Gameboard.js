@@ -1,9 +1,10 @@
 import { Ship } from "./Ship";
 
 export class Gameboard {
-    constructor(){
-        this.width = 0;
-        this.height = 0;
+    constructor(width = 0, height = 0){
+        this.width = width;
+        this.height = height;
+        this.buildGrid();
     }
 
     buildGrid(){
