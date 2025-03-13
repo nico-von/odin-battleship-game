@@ -19,6 +19,37 @@ export class Gameboard {
         }
     }
 
+    placeShip(orientation, ship, x, y) {
+        const length = ship.length;
+        
+        for(let i = 0; i < length; i++) {
+            let coordinate;
+            if (orientation === "v") {
+                coordinate = this.grid[y + i][x];
+            } else if (orientation === "h") {
+                coordinate = this.grid[y][x + i];
+            } else {
+                return;
+            }
+
+            if (coordinate.ship instanceof Ship) {
+                return false;
+            }
+        }
+
+        for(let i = 0; i < length; i++) {
+            let coordinate;
+            if (orientation === "v") {
+                coordinate = this.grid[y + i][x];
+            } else if (orientation === "h") {
+                coordinate = this.grid[y][x + i];
+            }
+            coordinate.ship = ship;
+        }
+
+        return true;
+    }
+
     hit(x,y) {
         let coordinate = this.grid[y][x];
         if (coordinate.hit) {
