@@ -73,9 +73,53 @@ describe("Gameboard properties", () => {
         expect(gameboard.grid[5][6] instanceof Coordinate).toBeTruthy();
         expect(gameboard.grid[6][9] instanceof Coordinate).toBeTruthy();
     });
-
+})
+describe("Gameboard hit functionality", () => {
+    let gameboard;
+    beforeEach(() => {
+        gameboard = new Gameboard(10,10);
+        let testShip = new Ship(1);
+        gameboard.grid[5][5].ship = testShip;
+    })
+    test("Gameboard must have a shipsSunk property that is a number", () => {
+        expect(gameboard.shipsSunk).toBeDefined();
+        expect(typeof gameboard.shipsSunk).toBe("number");
+    })
+    test("Gameboard must have a hit() function", ()=>{
+        expect(typeof gameboard.hit).toBe("function");
+    })
+    test("Gameboard hit function must hit switch the Coordinate.hit to true", () =>{
+        gameboard.hit(2,3); //x,y
+        gameboard.hit(3,4);
+        gameboard.hit(0,2);      
+        expect(gameboard.grid[3][2].hit).toBeTruthy(); //y, x
+        expect(gameboard.grid[4][3].hit).toBeTruthy();
+        expect(gameboard.grid[2][0].hit).toBeTruthy();
+        expect(gameboard.grid[9][9].hit).toBeFalsy();
+    })
+    test("Gameboard hit function must increment shipsSunk if a ship was sunk", () => {
+        let shipsSunk = gameboard.shipsSunk;
+        gameboard.hit(5,5);
+        expect(gameboard.shipsSunk).toBe(shipsSunk + 1);
+    })
+    test("Gameboard hit function must not duplicate hits", () => {
+        let shipsSunk = gameboard.shipsSunk;
+        gameboard.hit(5,5);
+        gameboard.hit(5,5);
+        expect(gameboard.shipsSunk).toBe(shipsSunk + 1);
+    })
 })
 
+describe("Gameboard placeships functionality", () => {
+    let gameboard;
+    beforeEach(()=>{
+        gameboard = new Gameboard(10, 10);
+    })
+    test("Gameboard must have a placedships property that is a number", () => {
+        expect(gameboard.placedShips).toBeDefined();
+        expect(typeof gameboard.placedShips).toBe("number");
+    })
+})
 describe("Coordinate properties", () => {
     let coordinate;
     beforeEach(()=>{

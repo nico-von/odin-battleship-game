@@ -4,6 +4,8 @@ export class Gameboard {
     constructor(width = 0, height = 0){
         this.width = width;
         this.height = height;
+        this.placedShips = 0;
+        this.shipsSunk = 0;
         this.buildGrid();
     }
 
@@ -14,6 +16,21 @@ export class Gameboard {
             for(let j = 0; j < this.width; j++) {
                 this.grid[i].push(new Coordinate);
             }
+        }
+    }
+
+    hit(x,y) {
+        let coordinate = this.grid[y][x];
+        if (coordinate.hit) {
+            return;
+        }
+        coordinate.hit = true;
+        if (coordinate.miss) {
+            return;
+        }
+        coordinate.ship.hit();
+        if (coordinate.ship.isSunk()) {
+            this.shipsSunk += 1;
         }
     }
 
