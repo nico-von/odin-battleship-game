@@ -34,6 +34,10 @@ export class Gameboard {
         }
     }
 
+    get allShipsSunk() {
+        return this.placedShips <= this.shipsSunk;
+    }
+
     get size(){
         return this.width * this.height;
     }

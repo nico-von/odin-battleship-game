@@ -109,7 +109,32 @@ describe("Gameboard hit functionality", () => {
         expect(gameboard.shipsSunk).toBe(shipsSunk + 1);
     })
 })
-
+describe("Gameboard allShipsSunk() functionality", () => {
+    let gameboard;
+    beforeEach(()=>{
+        gameboard = new Gameboard(10,10);
+        let testShipA = new Ship(1);
+        let testShipB = new Ship(2);
+        let testShipC = new Ship(3);
+        gameboard.placedShips = 3;
+        gameboard.grid[2][3].ship = testShipA; //y, x 
+        gameboard.grid[5][6].ship = testShipB;
+        gameboard.grid[6][9].ship = testShipC; 
+    })
+    test("allShipsSunk property must exist", () => {
+        expect(gameboard.allShipsSunk).toBeDefined();
+    })
+    test("allShipsSunk() must return true when all ships have been sunk", () => {
+        gameboard.hit(3,2);
+        gameboard.hit(6,5);
+        gameboard.hit(9,6);
+        expect(gameboard.allShipsSunk).toBeTruthy;
+    })
+    test("allShipsSunk() must return false when not all ships have been sunk", () => {
+        gameboard.hit(3,2);
+        expect(gameboard.allShipsSunk).toBeFalsy;
+    })
+})
 describe("Gameboard placeships functionality", () => {
     let gameboard;
     beforeEach(()=>{
