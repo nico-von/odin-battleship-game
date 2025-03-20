@@ -33,6 +33,10 @@ export class Gameboard {
         }
 
         if(orientation === "v" && ((y + length) > (this.height))) {
+            //this.height was used instead of this.height - 1
+            // because y is the where the ship will be initially placed
+            // and therefore the equation is really 
+            // ((y - 1 + length) > (this.height - 1))   
             return;
         }
 
