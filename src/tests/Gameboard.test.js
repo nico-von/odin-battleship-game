@@ -115,6 +115,44 @@ describe("Gameboard placeships functionality", () => {
         expect(gameboard.placeShip("h", shipD, 4, 3)).toBeTruthy();
         expect(gameboard.placeShip("v", shipE, 6, 2)).toBeFalsy();
     })
+    test("Ship starting x coordinate must not be outside of board",() => {
+        let shipA = new Ship(1);
+        let shipB = new Ship(1);
+        gameboard = new Gameboard(2, 10);
+        expect(gameboard.placeShip("h", shipA, 9, 0)).toBeFalsy();
+        gameboard = new Gameboard(11, 10);
+        expect(gameboard.placeShip("h", shipB, 9, 0)).toBeTruthy();
+    })
+    test("Ship starting y coordinate must not be outside of board",() => {
+        let shipA = new Ship(1);
+        let shipB = new Ship(1);
+        gameboard = new Gameboard(2, 10);
+        expect(gameboard.placeShip("h", shipA, 0, 11)).toBeFalsy();
+        gameboard = new Gameboard(10, 11);
+        expect(gameboard.placeShip("h", shipB, 0, 9)).toBeTruthy();
+    })
+    test("Ship must not be too long from starting coord hor, it must return false if it was placed so", () => {
+        let shipA = new Ship(2);
+        let shipB = new Ship(2);
+        let shipC = new Ship(4);
+        let shipD = new Ship(3);
+        expect(gameboard.placeShip("h", shipA, 0, 0)).toBeTruthy();
+        expect(gameboard.placeShip("h", shipB, 11, 1)).toBeFalsy();
+        expect(gameboard.placeShip("h", shipC, 9, 0)).toBeFalsy();
+        expect(gameboard.placeShip("h", shipD, 2, 10)).toBeTruthy();
+    })
+    test("Ship must not be too long from starting coord vert, it must return false if it was placed so", () => {
+        let shipA = new Ship(2);
+        let shipB = new Ship(3);
+        let shipC = new Ship(2);
+        let shipD = new Ship(2);
+        let shipE = new Ship(4);
+        expect(gameboard.placeShip("v", shipA, 0, 0)).toBeTruthy();
+        expect(gameboard.placeShip("v", shipB, 0, 9)).toBeFalsy();
+        expect(gameboard.placeShip("v", shipC, 4, 0)).toBeTruthy();
+        expect(gameboard.placeShip("v", shipD, 7, 10)).toBeFalsy();
+        expect(gameboard.placeShip("v", shipE, 10, 9)).toBeFalsy();
+    })
 })
 
 describe("Gameboard hit functionality", () => {

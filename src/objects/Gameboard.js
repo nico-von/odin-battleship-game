@@ -20,7 +20,25 @@ export class Gameboard {
     }
 
     placeShip(orientation, ship, x, y) {
+        // returns true if ship was placed correctly
+        // returns false if not
         const length = ship.length;
+
+        if(x > this.width - 1) {
+            return;
+        }
+
+        if(y > this.height - 1) {
+            return;
+        }
+
+        if(orientation === "v" && ((y + length) > (this.height))) {
+            return;
+        }
+
+        if(orientation === "h" && ((x + length) > (this.width))){
+            return;
+        }
         
         for(let i = 0; i < length; i++) {
             let coordinate;
