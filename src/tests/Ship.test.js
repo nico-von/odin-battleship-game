@@ -1,4 +1,4 @@
-import { Ship } from "../objects/Ship"
+import { Ship } from "../model/Ship"
 
 test("Ship exists", () => {
     expect(Ship).toBeDefined();
