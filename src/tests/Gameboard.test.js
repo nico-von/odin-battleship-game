@@ -1,5 +1,5 @@
-import { Gameboard, Coordinate } from "../objects/Gameboard";
-import { Ship } from "../objects/Ship";
+import { Gameboard, Coordinate } from "../model/Gameboard";
+import { Ship } from "../model/Ship";
 
 test("Gameboard class should exist", () => {
     expect(Gameboard).toBeDefined();

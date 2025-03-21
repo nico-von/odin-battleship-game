@@ -1,5 +1,5 @@
-import { Gameboard } from "../objects/Gameboard";
-import { Player } from "../objects/Player";
+import { Gameboard } from "../model/Gameboard";
+import { Player } from "../model/Player";
 
 test("Player module should exist", () => {
     expect(Player).toBeDefined();
