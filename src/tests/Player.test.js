@@ -1,3 +1,4 @@
+import { Gameboard } from "../objects/Gameboard";
 import { Player } from "../objects/Player";
 
 test("Player module should exist", () => {
@@ -20,5 +21,18 @@ describe("Player module should show whether or not player is real or AI", () => 
         expect(player.isPlayerReal).toBe(true);
         player = new Player(false);
         expect(player.isPlayerReal).toBe(false);
+    })
+})
+
+describe("Player module should have its own gameboard", () => {
+    let player;
+    beforeEach(() => {
+        player = new Player;
+    })
+    test("gameboard should be defined", () => {
+        expect(player.gameboard).toBeDefined();
+    })
+    test("gameboard should be an instance of Gameboard", () => {
+        expect(player.gameboard instanceof Gameboard).toBeTruthy();
     })
 })
