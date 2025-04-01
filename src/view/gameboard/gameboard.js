@@ -17,6 +17,22 @@ export function createGameboardUIElement(height = 10, width = 10) {
             innerDiv.setAttribute("data-x", j);
             innerDiv.classList.add("battlefield-cell-content")
             
+            const innerSpan = document.createElement("span");
+
+            innerDiv.appendChild(innerSpan);
+
+            if(i === 0) {
+                const divMarker = document.createElement("div");
+                divMarker.textContent = j + 1;
+                divMarker.classList.add("marker", "marker-col");
+                innerDiv.appendChild(divMarker);
+            }
+            if(j === 0) {
+                const divMarker = document.createElement("div");
+                divMarker.classList.add("marker", "marker-row");
+                divMarker.textContent = i + 1;
+                innerDiv.appendChild(divMarker); 
+            }
             col.appendChild(innerDiv);
             row.appendChild(col);
 
