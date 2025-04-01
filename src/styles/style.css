@@ -17,3 +17,20 @@ header, footer {
     background-color: grey;
     width: 100%;
 }
+
+.battlefield-table {
+    margin: 0;
+    display: inline-block;
+    position: relative;
+}
+
+.battlefield-cell {
+    border: 1px solid #b4b4ff;
+    padding: 0;
+}
+
+.battlefield-cell-content {
+    position: relative;
+    height: 2rem;
+    width: 2rem;
+}
