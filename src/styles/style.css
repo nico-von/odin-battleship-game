@@ -37,8 +37,8 @@ header, footer {
 
 .battlefield-cell-content {
     position: relative;
-    height: 2rem;
-    width: 2rem;
+    height: 2em;
+    width: 2em;
 }
 
 .marker {
@@ -60,4 +60,13 @@ header, footer {
     text-align: right;
     top: 1em;
     height: 1em;
+}
+
+.gameboard {
+    min-height: 340px;
+    min-width: 340px;
+}
+
+table {
+    border-collapse: collapse;
 }
