@@ -13,6 +13,12 @@ body {
     width: 100vw;
 }
 
+main {
+    display: flex;
+    justify-content: space-evenly;
+    gap: 5rem;
+}
+
 header, footer {
     background-color: grey;
     width: 100%;
