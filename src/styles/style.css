@@ -34,3 +34,24 @@ header, footer {
     height: 2rem;
     width: 2rem;
 }
+
+.marker {
+    position: absolute;
+    font-size: 11px;
+    z-index: -1;
+}
+
+.marker-col {
+    top: -2em;
+    left: 0;
+    width: 100%;
+    text-align: center;
+}
+
+.marker-row {
+    left: -3em;
+    width: 2em;
+    text-align: right;
+    top: 1em;
+    height: 1em;
+}
