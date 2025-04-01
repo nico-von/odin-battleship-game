@@ -1,5 +1,6 @@
 export function createGameboardUIElement(height = 10, width = 10) {
     const gameboard = document.createElement("div");
+    gameboard.classList.add("gameboard");
     const gameboardTable = document.createElement("table");
     gameboardTable.classList.add("battlefield-table");
     const gameboardTableBody = document.createElement("tbody");
