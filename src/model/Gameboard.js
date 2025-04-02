@@ -4,7 +4,7 @@ export class Gameboard {
     constructor(width = 0, height = 0){
         this.width = width;
         this.height = height;
-        this.placedShips = 0;
+        this.placedShips = [];
         this.shipsSunk = 0;
         this.buildGrid();
     }
@@ -70,9 +70,9 @@ export class Gameboard {
                 coordinate = this.grid[y][x + i];
             }
             coordinate.ship = ship;
-            this.placedShips += 1;
         }
 
+        this.placedShips.push({ship, orientation, x, y});
         return true;
     }
 
@@ -85,7 +85,7 @@ export class Gameboard {
     }
 
     #getRandomDir() {
-        let randomDirection = Math.abs(Math.round(Math.random * 1));
+        let randomDirection = Math.abs(Math.round(Math.random() * 1));
         if (randomDirection == 0) {
             return "h";
         } else {
@@ -131,7 +131,7 @@ export class Gameboard {
     }
 
     get allShipsSunk() {
-        return this.placedShips <= this.shipsSunk;
+        return this.placedShips.length <= this.shipsSunk;
     }
 
     get size(){

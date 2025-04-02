@@ -81,9 +81,8 @@ describe("Gameboard placeships functionality", () => {
     beforeEach(()=>{
         gameboard = new Gameboard(11, 11);
     })
-    test("Gameboard must have a placedships property that is a number", () => {
+    test("Gameboard must have a placedships property", () => {
         expect(gameboard.placedShips).toBeDefined();
-        expect(typeof gameboard.placedShips).toBe("number");
     })
     test("Gameboard must have placeShip() function", () => {
         expect(gameboard.placeShip).toBeDefined();
@@ -103,6 +102,15 @@ describe("Gameboard placeships functionality", () => {
         expect(gameboard.grid[7][1].ship instanceof Ship).toBeTruthy();
         expect(gameboard.grid[8][1].ship instanceof Ship).toBeTruthy();
         expect(gameboard.grid[9][1].ship instanceof Ship).toBeTruthy();
+    })
+    test("placedships property must contain ship, orientation, x and y coordinate", () => {
+      let shipA = new Ship(2);
+      gameboard.placeShip("v", shipA, 0, 1);
+      expect(gameboard.placedShips[0].ship instanceof Ship).toBeTruthy();
+      expect(gameboard.placedShips[0].ship.length).toBe(2);
+      expect(gameboard.placedShips[0].orientation).toBe("v");
+      expect(gameboard.placedShips[0].x).toBe(0);
+      expect(gameboard.placedShips[0].y).toBe(1);  
     })
     test("Ships must not overlap, it must return false if ship was not placed, true if it was", () => {
         let shipA = new Ship(2);
@@ -199,7 +207,6 @@ describe("Gameboard allShipsSunk() functionality", () => {
         let testShipA = new Ship(1);
         let testShipB = new Ship(2);
         let testShipC = new Ship(3);
-        gameboard.placedShips = 3;
         gameboard.grid[2][3].ship = testShipA; //y, x 
         gameboard.grid[5][6].ship = testShipB;
         gameboard.grid[6][9].ship = testShipC; 
