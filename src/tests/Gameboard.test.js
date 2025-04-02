@@ -1,3 +1,4 @@
+import { makeShips } from "../controller/ship-manager";
 import { Gameboard, Coordinate } from "../model/Gameboard";
 import { Ship } from "../model/Ship";
 
@@ -218,6 +219,41 @@ describe("Gameboard allShipsSunk() functionality", () => {
     })
 })
 
+describe("Gameboard placeShipRandomly() functionality", () => {
+    const shipList = 
+    [
+        {length: 5, count: 1},
+        {length: 4, count: 2},
+        {length: 2, count: 3},
+        {length: 1, count: 2}
+    ]
+    let ships = makeShips(shipList);
+
+    test("placeShipRandomly() must not return false", () => {
+        let gameboard;
+        for(let i = 0; i < 20; i++) {
+            gameboard = new Gameboard(10, 10);
+            expect(gameboard.placeShipsRandomly(ships)).toBeTruthy();
+        }
+    })
+
+    test("placeShipRandomly() must not accept ships more than its height or width", () => {
+        let gameboard;
+        gameboard = new Gameboard(8, 8);
+        expect(gameboard.placeShipsRandomly(ships)).toBeTruthy();
+        gameboard = new Gameboard(7, 7);
+        expect(gameboard.placeShipsRandomly(ships)).toBeFalsy();
+    })
+
+    test("placeShipRandomly() must not accept ship longer than its width or height", () => {
+        let gameboard;
+        gameboard = new Gameboard(10, 10);
+        expect(gameboard.placeShipsRandomly(ships)).toBeTruthy();
+        ships.push(new Ship(11));
+        gameboard = new Gameboard(10,10)
+        expect(gameboard.placeShipsRandomly(ships)).toBeFalsy();
+    })
+})
 describe("Coordinate properties", () => {
     let coordinate;
     beforeEach(()=>{

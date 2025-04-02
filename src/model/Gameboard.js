@@ -23,6 +23,9 @@ export class Gameboard {
         // returns true if ship was placed correctly
         // returns false if not
         const length = ship.length;
+        if(length > this.width || length > this.height) {
+            return;
+        }
 
         if(x > this.width - 1) {
             return;
@@ -67,8 +70,48 @@ export class Gameboard {
                 coordinate = this.grid[y][x + i];
             }
             coordinate.ship = ship;
+            this.placedShips += 1;
         }
 
+        return true;
+    }
+
+    #getRandomX() {
+        return Math.abs(Math.round(Math.random() * this.width - 1));
+    }
+
+    #getRandomY() {
+        return Math.abs(Math.round(Math.random() * this.height - 1));
+    }
+
+    #getRandomDir() {
+        let randomDirection = Math.abs(Math.round(Math.random * 1));
+        if (randomDirection == 0) {
+            return "h";
+        } else {
+            return "v";
+        }
+    }
+
+    placeShipsRandomly(ships) {
+        // can only place up to n ships equal to width or height
+        if(ships.length > this.width || ships.length > this.height) {
+            return false;
+        }
+        for (let ship of ships) {
+            if (ship.length > this.width || ship.length > this.height) {
+                return;
+            }
+
+            let shipPlaced = false;
+            while(!shipPlaced) {
+                shipPlaced = this.placeShip(
+                    this.#getRandomDir(),
+                    ship,
+                    this.#getRandomX(),
+                    this.#getRandomY());
+            }
+        }
         return true;
     }
 
