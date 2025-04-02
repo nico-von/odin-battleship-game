@@ -33,6 +33,6 @@ describe("makeShips controller should work as expected", () => {
             shipH
         ]
         expect(ships).toEqual(expect.arrayContaining(expShips));
+        expect(ships.length).toEqual(8);
     })
-    
 });
