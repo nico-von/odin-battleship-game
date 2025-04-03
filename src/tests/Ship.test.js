@@ -68,3 +68,13 @@ describe ("Ship has an isSunk function that see if ship sunk based on length and
         expect(isSunk).toBeTruthy();
     })
 }) 
+
+describe("Ship should hold the coordinates whence it was placed", () => {
+    let newShip;
+    beforeEach(() => {
+        newShip = new Ship();
+    })
+    test("Ship should have a coordinates property that is an array", () => {
+        expect(Array.isArray(newShip.coordinates)).toBeTruthy();
+    })
+})
