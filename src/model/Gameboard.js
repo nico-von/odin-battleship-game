@@ -84,6 +84,10 @@ export class Gameboard {
             ship.coordinates.push(coordinate);
         }
 
+        let shipIndex = this.placedShips.findIndex((e) => e.ship == ship);
+        if (shipIndex !== -1) {
+            this.placedShips.splice(shipIndex, 1);
+        }
         this.placedShips.push({
                   ship, 
                   orientation, 

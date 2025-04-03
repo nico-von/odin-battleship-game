@@ -115,7 +115,24 @@ describe("Gameboard placeships functionality", () => {
     test("removing ship from coordinates must remove ship from board", () => {
         let shipA = new Ship(2);
         gameboard.placeShip("v",shipA,0,0);
-        expect(gameboard.placeShip("h", shipA, 0,0)).toBeTruthy();
+        expect(gameboard.placeShip("v", shipA, 1,0)).toBeTruthy();
+    })
+    test("rePlacing ship must not add to the length of placedShips", () => {
+        let shipA = new Ship(2);
+        gameboard.placeShip("v", shipA, 0, 0);
+        gameboard.placeShip("v", shipA, 1, 0);
+        expect(gameboard.placedShips.length).toBe(1);
+    })
+    test("rePlacing ship should have the x,ys updated", () => {
+        let shipA = new Ship(2);
+        let shipB = new Ship(3);
+        gameboard.placeShip("v", shipA, 0, 0);
+        gameboard.placeShip("v", shipB, 5, 4);
+        //replacement
+        gameboard.placeShip("v", shipA, 1, 0);
+        const shipAOnPlacedShip = gameboard.placedShips.find(e => e.ship == shipA);
+        expect(shipAOnPlacedShip.x).toBe(1);
+        expect(shipAOnPlacedShip.y).toBe(0);
     })
     test("Ships must not overlap, it must return false if ship was not placed, true if it was", () => {
         let shipA = new Ship(2);
