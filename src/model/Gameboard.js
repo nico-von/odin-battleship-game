@@ -18,11 +18,22 @@ export class Gameboard {
             }
         }
     }
-
+    #clearShipFromCoordinates(coordinates) {
+        for(let coordinate of coordinates) {
+            coordinate.ship = null; 
+        }
+    }
     placeShip(orientation, ship, x, y) {
         // returns true if ship was placed correctly
         // returns false if not
         const length = ship.length;
+
+        if (ship.coordinates.length > 0) {
+            this.#clearShipFromCoordinates(ship.coordinates);
+            // this looks a little bit coupled
+            ship.coordinates = [];
+        }
+
         if(length > this.width || length > this.height) {
             return;
         }
@@ -70,11 +81,19 @@ export class Gameboard {
                 coordinate = this.grid[y][x + i];
             }
             coordinate.ship = ship;
+            ship.coordinates.push(coordinate);
         }
 
-        this.placedShips.push({ship, orientation, x, y});
+        this.placedShips.push({
+                  ship, 
+                  orientation, 
+                  x, 
+                  y
+                });
+
         return true;
     }
+
 
     #getRandomX() {
         return Math.abs(Math.round(Math.random() * this.width - 1));

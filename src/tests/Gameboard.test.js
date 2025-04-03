@@ -103,7 +103,7 @@ describe("Gameboard placeships functionality", () => {
         expect(gameboard.grid[8][1].ship instanceof Ship).toBeTruthy();
         expect(gameboard.grid[9][1].ship instanceof Ship).toBeTruthy();
     })
-    test("placedships property must contain ship, orientation, x and y coordinate", () => {
+    test("placedships property must contain ship, orientation, x and y coordinate & coords objects", () => {
       let shipA = new Ship(2);
       gameboard.placeShip("v", shipA, 0, 1);
       expect(gameboard.placedShips[0].ship instanceof Ship).toBeTruthy();
@@ -111,6 +111,11 @@ describe("Gameboard placeships functionality", () => {
       expect(gameboard.placedShips[0].orientation).toBe("v");
       expect(gameboard.placedShips[0].x).toBe(0);
       expect(gameboard.placedShips[0].y).toBe(1);  
+    })
+    test("removing ship from coordinates must remove ship from board", () => {
+        let shipA = new Ship(2);
+        gameboard.placeShip("v",shipA,0,0);
+        expect(gameboard.placeShip("h", shipA, 0,0)).toBeTruthy();
     })
     test("Ships must not overlap, it must return false if ship was not placed, true if it was", () => {
         let shipA = new Ship(2);
