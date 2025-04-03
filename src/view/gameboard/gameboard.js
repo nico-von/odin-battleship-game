@@ -49,8 +49,22 @@ export function placeShip(gameboard, ship, orientation, x, y) {
     // query
     const startingTD = gameboard.querySelector(`div[data-x="${x}"][data-y="${y}"]`)
     const shipDiv = document.createElement("div");
+    // set length or height
+    const shipDivLengthEm = `${ship.length * 2}em`;
+    if (orientation == "h") {
+        shipDiv.style.marginLeft = "-2px";
+        shipDiv.style.paddingRight = shipDivLengthEm;
+        shipDiv.style.width = shipDivLengthEm;
+        shipDiv.style.height = "2em";
+    } else if (orientation == "v") {
+        shipDiv.style.marginTop = "-2px";
+        shipDiv.style.paddingBottom = shipDivLengthEm;
+        shipDiv.style.width = "2em";
+        shipDiv.style.height = shipDivLengthEm;
+    }
     shipDiv.dataset.length = ship.length;
     shipDiv.dataset.orientation = orientation;
     shipDiv.classList.add("ship");
+    
     startingTD.appendChild(shipDiv);
 }
