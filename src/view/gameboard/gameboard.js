@@ -1,8 +1,9 @@
-export function createGameboardUIElement(height = 10, width = 10) {
+export function createGameboardUIElement(height = 10, width = 10, isUser = true) {
     const gameboard = document.createElement("div");
     gameboard.classList.add("gameboard");
     const gameboardTable = document.createElement("table");
     gameboardTable.classList.add("battlefield-table");
+    gameboardTable.classList.add(isUser ? "battlefield-user" : "battlefield-rival");
     const gameboardTableBody = document.createElement("tbody");
 
     for(let i = 0; i < height; i++) {
@@ -14,8 +15,8 @@ export function createGameboardUIElement(height = 10, width = 10) {
             col.classList.add("battlefield-cell", "battlefield-cell-empty");
             
             const innerDiv = document.createElement("div");
-            innerDiv.setAttribute("data-y", i);
-            innerDiv.setAttribute("data-x", j);
+            innerDiv.dataset.y = i;
+            innerDiv.dataset.x = j;
             innerDiv.classList.add("battlefield-cell-content")
             
             const innerSpan = document.createElement("span");
@@ -43,3 +44,13 @@ export function createGameboardUIElement(height = 10, width = 10) {
     gameboard.appendChild(gameboardTable);
     return gameboard;
 };
+
+export function placeShip(gameboard, ship, orientation, x, y) {
+    // query
+    const startingTD = gameboard.querySelector(`div[data-x="${x}"][data-y="${y}"]`)
+    const shipDiv = document.createElement("div");
+    shipDiv.dataset.length = ship.length;
+    shipDiv.dataset.orientation = orientation;
+    shipDiv.classList.add("ship");
+    startingTD.appendChild(shipDiv);
+}
