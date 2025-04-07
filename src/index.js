@@ -6,4 +6,4 @@ import { initialiseGame } from "./controller/game/game-manager";
 import "./styles/style.css"
 
 body.append(header, main, footer);
-initialiseGame();
+await initialiseGame();
