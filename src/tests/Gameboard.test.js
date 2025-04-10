@@ -287,7 +287,7 @@ describe("Gameboard placeShipRandomly() functionality", () => {
 
     test("placeShipRandomly() must not accept ships more than its height or width", () => {
         let gameboard;
-        gameboard = new Gameboard(8, 8);
+        gameboard = new Gameboard(15, 15);
         expect(gameboard.placeShipsRandomly(ships)).toBeTruthy();
         gameboard = new Gameboard(7, 7);
         expect(gameboard.placeShipsRandomly(ships)).toBeFalsy();
