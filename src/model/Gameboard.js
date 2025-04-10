@@ -120,83 +120,10 @@ export class Gameboard {
                      coordinate.ship = ship;
                      ship.coordinates.push(coordinate);
                  }
-                //  if(orientation === "h") {
-                //      if ((i === y && (j === x - 1 || j === x + length + 1)) || i === y - 1 || i === y + 1) {
-                //          coordinate.ship = 0;
-                //      } else if( i === y && !(j === x - 1 || j === x + length + 1)) {
-                //          coordinate.ship = ship;
-                //          ship.coordinates.push(coordinate);
-                //      }
-                //  } else if(orientation === "v" ){
-                //      if ((j === x && (i === y - 1 || i === y + length + 1)) || j === x - 1 || j === x + 1) {
-                //          coordinate.ship = 0;
-                //      } else if( j === x && !(i === y - 1 || i === y + length + 1)) {
-                //          coordinate.ship = ship;
-                //          ship.coordinates.push(coordinate);
-                //      }
-                //  }
-
-                
+                 
              }
          }
 
-        
-        
-        // for(let i = 0; i < length; i++) {
-        //     let coordinate;
-        //     if (orientation === "v") {
-        //         coordinate = this.grid[y + i][x];
-        //     } else if (orientation === "h") {
-        //         coordinate = this.grid[y][x + i];
-        //     }
-        //     coordinate.ship = ship;
-        //     ship.coordinates.push(coordinate);
-        // }
-
-        // //new checking loop for v
-        // for(let i = y - 1; i < y + length + 1; i++) {
-        //     //check for i extreme < 0
-        //     if (i < 0) {
-        //         continue; // skip
-        //     }
-        //     // check for i extreme > grid.length
-        //     if(i > this.grid.length) {
-        //         break; //stop altogether
-        //     }
-        //     for (let j = x - 1; j < x + 1; j++) {
-        //         // check for j extreme > grid.length
-        //         if (j < 0) {
-        //             continue; //skip
-        //         }
-        //         // check for j extreme > grid.length
-        //         if (j > this.grid[i].length) {
-        //             break; //skip altogther
-        //         }
-
-        //         let coordinate = this.grid[i][j];
-        //         if (coordinate.ship instanceof Ship || coordinate.ship === 0) {
-        //             return false;
-        //         }
-
-        //     }
-        // }
-
-
-
-        // for(let i = 0; i < length; i++) {
-        //     let coordinate;
-        //     if (orientation === "v") {
-        //         coordinate = this.grid[y + i][x];
-        //     } else if (orientation === "h") {
-        //         coordinate = this.grid[y][x + i];
-        //     } else {
-        //         return;
-        //     }
-
-        //     if (coordinate.ship instanceof Ship) {
-        //         return false;
-        //     }
-        // }
 
         let shipIndex = this.placedShips.findIndex((e) => e.ship == ship);
         if (shipIndex !== -1) {
