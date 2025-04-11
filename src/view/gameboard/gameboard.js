@@ -66,4 +66,15 @@ export function placeShip(gameboard, ship, orientation, x, y) {
     shipDiv.dataset.orientation = orientation;
     shipDiv.classList.add("ship");
     startingTD.appendChild(shipDiv);
+    
+    for (let i = 0; i < ship.length; i++){
+        let td;
+        if(orientation === "h") {
+            td = gameboard.querySelector(`div[data-x="${x + i}"][data-y="${y}"]`)
+        } else if (orientation === "v") {
+            td = gameboard.querySelector(`div[data-x="${x}"][data-y="${y + i}"]`)
+        }
+        td.parentNode.classList.remove("battlefield-cell-empty");
+        td.parentNode.classList.add("battlefield-cell-busy");
+    }
 }
