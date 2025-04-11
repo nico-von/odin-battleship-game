@@ -67,7 +67,11 @@ export function placeShip(gameboard, ship, orientation, x, y) {
     shipDiv.classList.add("ship");
     startingTD.appendChild(shipDiv);
     
-    for (let i = 0; i < ship.length; i++){
+    addTdClasses(gameboard, ship.length, orientation, x, y);
+}
+
+function addTdClasses(gameboard, length, orientation, x, y) {
+    for (let i = 0; i < length; i++){
         let td;
         if(orientation === "h") {
             td = gameboard.querySelector(`div[data-x="${x + i}"][data-y="${y}"]`)
