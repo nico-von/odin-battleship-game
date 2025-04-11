@@ -46,7 +46,7 @@ export function createGameboardUIElement(height = 10, width = 10, isUser = true)
 };
 
 export function placeShip(gameboard, ship, orientation, x, y) {
-    // query
+    // query    
     const startingTD = gameboard.querySelector(`div[data-x="${x}"][data-y="${y}"]`)
     const shipDiv = document.createElement("div");
     // set length or height
@@ -65,6 +65,5 @@ export function placeShip(gameboard, ship, orientation, x, y) {
     shipDiv.dataset.length = ship.length;
     shipDiv.dataset.orientation = orientation;
     shipDiv.classList.add("ship");
-    
     startingTD.appendChild(shipDiv);
 }
