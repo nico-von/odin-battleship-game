@@ -84,3 +84,8 @@ table {
     border: 2px solid #9ab118;
     padding: 0;
 }
+
+.ship-on-droppable {
+    background: rgba(255, 255, 255, 0);
+    border: rgba(255, 255, 255, 0);
+}

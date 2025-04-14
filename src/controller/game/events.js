@@ -1,18 +1,21 @@
 let currentDroppable = null;
 import { setTDClass } from "../../view/gameboard/gameboard";
 const DROPPABLE_TD_CLASS = "cell-droppable"
+const ABOVE_DROPPABLE = "ship-on-droppable"
 
 function enterDroppable(droppable, ship, gameboard, length, orientation) {
     //things to do on entry of ship to cell droppable
     // make ship colour on entry to droppable
     let droppableParent = droppable.parentNode;
     droppableParent.classList.add(DROPPABLE_TD_CLASS);
+    ship.classList.add(ABOVE_DROPPABLE);
 }
 
 function leaveDroppable(ship, droppable) {
     //things to do on exit of ship to cell droppable
     let droppableParent = droppable.parentNode;
     droppableParent.classList.remove(DROPPABLE_TD_CLASS)
+    ship.classList.remove(ABOVE_DROPPABLE);
 }
 
 export function shipDragFunction(e, gameboard) {
