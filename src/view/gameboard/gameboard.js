@@ -67,10 +67,12 @@ export function placeShip(gameboard, ship, orientation, x, y) {
     shipDiv.classList.add("ship");
     startingTD.appendChild(shipDiv);
     
-    addTdClasses(gameboard, ship.length, orientation, x, y);
+    setTDClass(gameboard, ship.length, orientation, x, y);
 }
 
-function addTdClasses(gameboard, length, orientation, x, y) {
+function setTDClass(gameboard, length, orientation, x, y, isBusy = true) {
+    const toRemove = isBusy ? "battlefield-cell-empty" : "battlefield-cell-busy";
+    const toAdd = isBusy ? "battlefield-cell-busy" : "battlefield-cell-empty";
     for (let i = 0; i < length; i++){
         let td;
         if(orientation === "h") {
@@ -78,7 +80,7 @@ function addTdClasses(gameboard, length, orientation, x, y) {
         } else if (orientation === "v") {
             td = gameboard.querySelector(`div[data-x="${x}"][data-y="${y + i}"]`)
         }
-        td.parentNode.classList.remove("battlefield-cell-empty");
-        td.parentNode.classList.add("battlefield-cell-busy");
+        td.parentNode.classList.remove(toRemove);
+        td.parentNode.classList.add(toAdd);
     }
 }
