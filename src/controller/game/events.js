@@ -11,6 +11,8 @@ function enterDroppable(droppable, ship, gameboard, length, orientation) {
 
 function leaveDroppable(ship, droppable) {
     //things to do on exit of ship to cell droppable
+    let droppableParent = droppable.parentNode;
+    droppableParent.classList.remove(DROPPABLE_TD_CLASS)
 }
 
 export function shipDragFunction(e, gameboard) {
@@ -81,7 +83,8 @@ function moveShip(ship, gameboard, currentDroppable, shipParent, length, orienta
         
         document.body.removeChild(ship);
         currentDroppable.appendChild(ship);
-
+        currentDroppable.removeChild
+        leaveDroppable(ship, currentDroppable);
     } else {
         // put back to place
         document.body.removeChild(ship);
