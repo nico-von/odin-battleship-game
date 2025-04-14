@@ -79,3 +79,8 @@ table {
     left: 0;
     top: 0;
 }
+
+.cell-droppable {
+    border: 2px solid #9ab118;
+    padding: 0;
+}
