@@ -30,6 +30,9 @@ export function shipDragFunction(e, gameboard) {
     x = Number(x);
     y = Number(y);
 
+    // remove busy status of original cells
+    setTDClass(gameboard, length, orientation, x, y, false);
+
     let shiftX = e.clientX - ship.getBoundingClientRect().left;
     let shiftY = e.clientY - ship.getBoundingClientRect().top;
 
@@ -81,7 +84,7 @@ function moveShip(ship, gameboard, currentDroppable, shipParent, length, orienta
         x = Number(x);
         y = Number(y);
 
-        setTDClass(gameboard, length, orientation, oldX, oldY, false)//
+        
         setTDClass(gameboard, length, orientation, x, y, true);
         
         document.body.removeChild(ship);
@@ -90,6 +93,7 @@ function moveShip(ship, gameboard, currentDroppable, shipParent, length, orienta
         leaveDroppable(ship, currentDroppable);
     } else {
         // put back to place
+        setTDClass(gameboard, length, orientation, oldX, oldY, false);
         document.body.removeChild(ship);
         shipParent.appendChild(ship);
     }
