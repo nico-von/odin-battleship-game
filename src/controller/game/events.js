@@ -1,4 +1,5 @@
 let currentDroppable = null;
+import { setTDClass } from "../../view/gameboard/gameboard";
 
 function enterDroppable(ship, droppable) {
     //things to do on entry of ship to cell droppable
@@ -8,10 +9,17 @@ function leaveDroppable(ship, droppable) {
     //things to do on exit of ship to cell droppable
 }
 
-export function shipDragFunction(e) {
+export function shipDragFunction(e, gameboard) {
     const ship = e.target;
     const shipParent = ship.parentNode;
-    console.log("shipParent", shipParent);
+
+    let {orientation, length} = ship.dataset;
+    let {x, y} = shipParent.dataset;
+    
+    //set types 
+    length = Number(length);
+    x = Number(x);
+    y = Number(y);
 
     let shiftX = e.clientX - ship.getBoundingClientRect().left;
     let shiftY = e.clientY - ship.getBoundingClientRect().top;
@@ -50,19 +58,29 @@ export function shipDragFunction(e) {
 
     ship.onmouseup = function() {
         document.removeEventListener('mousemove', onMouseMove);
-        if (currentDroppable) {
-            // this is where the ship is appended or place ship is called
-            console.log(currentDroppable);
-            document.body.removeChild(ship);
-            currentDroppable.appendChild(ship);
-        } else {
-            // put back to place
-            document.body.removeChild(ship);
-            shipParent.appendChild(ship);
-        }
-
+        moveShip(ship, gameboard, currentDroppable, shipParent, length, orientation, x, y);
         ship.style.left = 0;
         ship.style.top = 0;
         ship.onmouseup = null;
+    }
+}
+
+function moveShip(ship, gameboard, currentDroppable, shipParent, length, orientation, oldX, oldY) {
+    if (currentDroppable) {
+        // this is where the ship is appended or place ship is called
+        let {x, y} = currentDroppable.dataset;
+        x = Number(x);
+        y = Number(y);
+
+        setTDClass(gameboard, length, orientation, oldX, oldY, false)//
+        setTDClass(gameboard, length, orientation, x, y, true);
+        
+        document.body.removeChild(ship);
+        currentDroppable.appendChild(ship);
+
+    } else {
+        // put back to place
+        document.body.removeChild(ship);
+        shipParent.appendChild(ship);
     }
 }

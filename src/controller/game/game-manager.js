@@ -23,7 +23,7 @@ function allowDragging(gameboard, dragFunction) {
         switch(target.className) {
             case 'ship':
                 console.log(target);
-                dragFunction(e);
+                dragFunction(e, gameboard);
                 break;
         }
     })

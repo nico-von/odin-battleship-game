@@ -70,7 +70,7 @@ export function placeShip(gameboard, ship, orientation, x, y) {
     setTDClass(gameboard, ship.length, orientation, x, y);
 }
 
-function setTDClass(gameboard, length, orientation, x, y, isBusy = true) {
+export function setTDClass(gameboard, length, orientation, x, y, isBusy = true) {
     const toRemove = isBusy ? "battlefield-cell-empty" : "battlefield-cell-busy";
     const toAdd = isBusy ? "battlefield-cell-busy" : "battlefield-cell-empty";
     for (let i = 0; i < length; i++){
