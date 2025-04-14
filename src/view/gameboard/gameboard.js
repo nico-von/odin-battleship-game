@@ -1,23 +1,37 @@
+const GAMEBOARD = "gameboard"
+const BATTLEFIELD_TABLE = "battlefield-table"
+const BATTLEFIELD_ROW = "battlefield-row"
+const BATTLEFIELD_USER = "battlefield-user"
+const BATTLEFIELD_RIVAL = "battlefield-rival"
+const BATTLEFIELD_CELL = "battlefield-cell"
+const BATTLEFIELD_CELL_EMPTY = "battlefield-cell-empty";
+const BATTLEFIELD_CELL_BUSY = "battlefield-cell-busy";
+const BATTLEFIELD_CELL_CONTENT = "battlefield-cell-content";
+const MARKER = "marker";
+const MARKER_COL = "marker-col";
+const MARKER_ROW = "marker-row";
+const SHIP = "ship";
+
 export function createGameboardUIElement(height = 10, width = 10, isUser = true) {
     const gameboard = document.createElement("div");
-    gameboard.classList.add("gameboard");
+    gameboard.classList.add(GAMEBOARD);
     const gameboardTable = document.createElement("table");
-    gameboardTable.classList.add("battlefield-table");
-    gameboardTable.classList.add(isUser ? "battlefield-user" : "battlefield-rival");
+    gameboardTable.classList.add(BATTLEFIELD_TABLE);
+    gameboardTable.classList.add(isUser ? BATTLEFIELD_USER : BATTLEFIELD_RIVAL);
     const gameboardTableBody = document.createElement("tbody");
 
     for(let i = 0; i < height; i++) {
         const row = document.createElement("tr");
-        row.classList.add("battlefield-row");
+        row.classList.add(BATTLEFIELD_ROW);
         gameboardTableBody.appendChild(row)
         for (let j = 0; j < width; j++){
             const col = document.createElement("td");
-            col.classList.add("battlefield-cell", "battlefield-cell-empty");
+            col.classList.add(BATTLEFIELD_CELL, BATTLEFIELD_CELL_EMPTY);
             
             const innerDiv = document.createElement("div");
             innerDiv.dataset.y = i;
             innerDiv.dataset.x = j;
-            innerDiv.classList.add("battlefield-cell-content")
+            innerDiv.classList.add(BATTLEFIELD_CELL_CONTENT)
             
             const innerSpan = document.createElement("span");
 
@@ -26,12 +40,12 @@ export function createGameboardUIElement(height = 10, width = 10, isUser = true)
             if(i === 0) {
                 const divMarker = document.createElement("div");
                 divMarker.textContent = j + 1;
-                divMarker.classList.add("marker", "marker-col");
+                divMarker.classList.add(MARKER, MARKER_COL);
                 innerDiv.appendChild(divMarker);
             }
             if(j === 0) {
                 const divMarker = document.createElement("div");
-                divMarker.classList.add("marker", "marker-row");
+                divMarker.classList.add(MARKER, MARKER_ROW);
                 divMarker.textContent = i + 1;
                 innerDiv.appendChild(divMarker); 
             }
@@ -64,15 +78,15 @@ export function placeShip(gameboard, ship, orientation, x, y) {
     }
     shipDiv.dataset.length = ship.length;
     shipDiv.dataset.orientation = orientation;
-    shipDiv.classList.add("ship");
+    shipDiv.classList.add(SHIP);
     startingTD.appendChild(shipDiv);
     
     setTDClass(gameboard, ship.length, orientation, x, y);
 }
 
 export function setTDClass(gameboard, length, orientation, x, y, isBusy = true) {
-    const toRemove = isBusy ? "battlefield-cell-empty" : "battlefield-cell-busy";
-    const toAdd = isBusy ? "battlefield-cell-busy" : "battlefield-cell-empty";
+    const toRemove = isBusy ? BATTLEFIELD_CELL_EMPTY : BATTLEFIELD_CELL_BUSY;
+    const toAdd = isBusy ? BATTLEFIELD_CELL_BUSY : BATTLEFIELD_CELL_EMPTY;
     for (let i = 0; i < length; i++){
         let td;
         if(orientation === "h") {
