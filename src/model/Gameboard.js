@@ -106,7 +106,7 @@ export class Gameboard {
                 if (testX < 0 || testY < 0) {
                     continue;
                 }
-                if (testX >= this.height || testY >= this.width) {
+                if (testX >= this.width || testY >= this.height) {
                     break;
                 }
                 let coordinate = this.grid[testY][testX];
