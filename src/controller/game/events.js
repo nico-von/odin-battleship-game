@@ -6,16 +6,46 @@ const ABOVE_DROPPABLE = "ship-on-droppable"
 function enterDroppable(droppable, ship, gameboard, length, orientation) {
     //things to do on entry of ship to cell droppable
     // make ship colour on entry to droppable
-    let droppableParent = droppable.parentNode;
-    droppableParent.classList.add(DROPPABLE_TD_CLASS);
-    ship.classList.add(ABOVE_DROPPABLE);
+    let x = droppable.dataset.x;
+    let y = droppable.dataset.y;
+    x = Number(x);
+    y = Number(y);
+
+    for (let i = 0; i < length; i++) {
+        let td;
+        if(orientation === "h") {
+            td = gameboard.querySelector(`div[data-x="${x + i}"][data-y="${y}"]`)
+        } else if (orientation === "v") {
+            td = gameboard.querySelector(`div[data-x="${x}"][data-y="${y + i}"]`)
+        }
+        if(td === null) {
+            break;
+        }
+        td.parentNode.classList.add(DROPPABLE_TD_CLASS);
+        ship.classList.add(ABOVE_DROPPABLE);
+    }
 }
 
-function leaveDroppable(ship, droppable) {
+function leaveDroppable(droppable, ship, gameboard, length, orientation) {
     //things to do on exit of ship to cell droppable
-    let droppableParent = droppable.parentNode;
-    droppableParent.classList.remove(DROPPABLE_TD_CLASS)
-    ship.classList.remove(ABOVE_DROPPABLE);
+    let x = droppable.dataset.x;
+    let y = droppable.dataset.y;
+    x = Number(x);
+    y = Number(y);
+
+    for (let i = 0; i < length; i++) {
+        let td;
+        if(orientation === "h") {
+            td = gameboard.querySelector(`div[data-x="${x + i}"][data-y="${y}"]`)
+        } else if (orientation === "v") {
+            td = gameboard.querySelector(`div[data-x="${x}"][data-y="${y + i}"]`)
+        }
+        if(td === null) {
+            break;
+        }
+        td.parentNode.classList.remove(DROPPABLE_TD_CLASS);
+        ship.classList.remove(ABOVE_DROPPABLE);
+    }
 }
 
 export function shipDragFunction(e) {
@@ -56,7 +86,7 @@ export function shipDragFunction(e) {
         let droppableBelow = elemBelow.closest('.battlefield-user .battlefield-cell-empty .battlefield-cell-content');
         if (currentDroppable != droppableBelow) {
             if (currentDroppable) {
-                leaveDroppable(ship, currentDroppable);
+                leaveDroppable(currentDroppable, ship, gameboard, length, orientation);
             }
             currentDroppable = droppableBelow;
             if (currentDroppable) {
@@ -91,7 +121,7 @@ function moveShip(ship, gameboard, currentDroppable, shipParent, length, orienta
         document.body.removeChild(ship);
         currentDroppable.appendChild(ship);
         currentDroppable.removeChild
-        leaveDroppable(ship, currentDroppable);
+        leaveDroppable(currentDroppable, ship, gameboard, length, orientation);
     } else {
         // put back to place
         setTDClass(gameboard, length, orientation, oldX, oldY, true);
