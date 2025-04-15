@@ -87,6 +87,14 @@ export function placeShip(gameboard, ship, orientation, x, y) {
 export function setTDClass(gameboard, length, orientation, x, y, isBusy = true) {
     const toRemove = isBusy ? BATTLEFIELD_CELL_EMPTY : BATTLEFIELD_CELL_BUSY;
     const toAdd = isBusy ? BATTLEFIELD_CELL_BUSY : BATTLEFIELD_CELL_EMPTY;
+
+    setOnAffectedCells(gameboard, length, orientation, x, y, (td) => {
+        td.parentNode.classList.remove(toRemove);
+        td.parentNode.classList.add(toAdd);
+    })
+}
+
+export function setOnAffectedCells(gameboard, length, orientation, x, y, callback) {
     for (let i = 0; i < length; i++) {
         let td;
         if (orientation === "h") {
@@ -97,8 +105,6 @@ export function setTDClass(gameboard, length, orientation, x, y, isBusy = true) 
         if (td === null) {
             break;
         }
-        td.parentNode.classList.remove(toRemove);
-        td.parentNode.classList.add(toAdd);
+        callback(td);
     }
 }
-

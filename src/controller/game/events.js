@@ -1,5 +1,6 @@
 let currentDroppable = null;
-import { setTDClass } from "../../view/gameboard/gameboard";
+import { setTDClass, setOnAffectedCells } from "../../view/gameboard/gameboard";
+
 const DROPPABLE_TD_CLASS = "cell-droppable"
 const ABOVE_DROPPABLE = "ship-on-droppable"
 
@@ -11,19 +12,12 @@ function enterDroppable(droppable, ship, gameboard, length, orientation) {
     x = Number(x);
     y = Number(y);
 
-    for (let i = 0; i < length; i++) {
-        let td;
-        if(orientation === "h") {
-            td = gameboard.querySelector(`div[data-x="${x + i}"][data-y="${y}"]`)
-        } else if (orientation === "v") {
-            td = gameboard.querySelector(`div[data-x="${x}"][data-y="${y + i}"]`)
-        }
-        if(td === null) {
-            break;
-        }
+    setOnAffectedCells(gameboard, length, orientation, x, y, (td) => {
         td.parentNode.classList.add(DROPPABLE_TD_CLASS);
-        ship.classList.add(ABOVE_DROPPABLE);
-    }
+    })
+
+    ship.classList.add(ABOVE_DROPPABLE);
+
 }
 
 function leaveDroppable(droppable, ship, gameboard, length, orientation) {
@@ -33,19 +27,11 @@ function leaveDroppable(droppable, ship, gameboard, length, orientation) {
     x = Number(x);
     y = Number(y);
 
-    for (let i = 0; i < length; i++) {
-        let td;
-        if(orientation === "h") {
-            td = gameboard.querySelector(`div[data-x="${x + i}"][data-y="${y}"]`)
-        } else if (orientation === "v") {
-            td = gameboard.querySelector(`div[data-x="${x}"][data-y="${y + i}"]`)
-        }
-        if(td === null) {
-            break;
-        }
+    setOnAffectedCells(gameboard, length, orientation, x, y, (td) => {
         td.parentNode.classList.remove(DROPPABLE_TD_CLASS);
-        ship.classList.remove(ABOVE_DROPPABLE);
-    }
+    })
+
+    ship.classList.remove(ABOVE_DROPPABLE);
 }
 
 export function shipDragFunction(e) {
