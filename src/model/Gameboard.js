@@ -59,57 +59,30 @@ export class Gameboard {
         }
 
 
-
-        // new test checking loop for h
-        for (let i = -1; i < 1; i++) {
-            for (let j = -1; j < length + 1; j++) {
-
-                const testX = orientation === "h" ? x + j : x + i;
-                const testY = orientation === "h" ? y + i : y + j;
-
-
-                if (testX < 0 || testY < 0) {
-                    continue;
-                }
-                if (testX >= this.height || testY >= this.width) {
-                    break;
-                }
-                let coordinate = this.grid[testY][testX];
-                if (coordinate.ship instanceof Ship || coordinate.ship === 0) {
-                    return false;
-                }
+        let shipPlaceable = this.#runThroughCells(orientation, x, y, length, (coordinate) => {
+            if (coordinate.ship instanceof Ship || coordinate.ship === 0) {
+                return false;
+            } else {
+                return true;
             }
+        })
+
+        if (!shipPlaceable) {
+            return false;
         }
 
-        // new setting loop for h
-        for (let i = -1; i < 1; i++) {
-            for (let j = -1; j < length + 1; j++) {
-
-                const testX = orientation === "h" ? x + j : x + i;
-                const testY = orientation === "h" ? y + i : y + j;
-
-
-                if (testX < 0 || testY < 0) {
-                    continue;
-                }
-                if (testX >= this.height || testY >= this.width) {
-                    break;
-                }
-                let coordinate = this.grid[testY][testX];
-
-                if ((testY > y - 1 && testY < y + length + 1 && orientation === "v" && testX === x) ||
-                    testX > x - 1 && testX < x + length + 1 && orientation === "h" && testY === y) {
-                    coordinate.ship = ship;
-                    ship.coordinates.push(coordinate);
-                } else {
-                    coordinate.ship = 0;
-                }
+        //placeShip
+        this.#runThroughCells(orientation, x, y, length, (coordinate, setX, setY) => {
+            if ((setY > y - 1 && setY < y + length + 1 && orientation === "v" && setX === x) ||
+                setX > x - 1 && setX < x + length + 1 && orientation === "h" && setY === y) {
+                coordinate.ship = ship;
+                ship.coordinates.push(coordinate);
+            } else {
+                coordinate.ship = 0;
             }
-        }
-
-
-
-
+            return true;
+        })
+        
         let shipIndex = this.placedShips.findIndex((e) => e.ship == ship);
         if (shipIndex !== -1) {
             this.placedShips.splice(shipIndex, 1);
@@ -124,7 +97,32 @@ export class Gameboard {
         return true;
     }
 
+    #runThroughCells(orientation, x, y, length, callback) {
+        for (let i = -1; i < 1; i++) {
+            for (let j = -1; j < length + 1; j++) {
 
+                const testX = orientation === "h" ? x + j : x + i;
+                const testY = orientation === "h" ? y + i : y + j;
+                if (testX < 0 || testY < 0) {
+                    continue;
+                }
+                if (testX >= this.height || testY >= this.width) {
+                    break;
+                }
+                let coordinate = this.grid[testY][testX];
+                let result = callback(coordinate, testX, testY);
+                // if result is false, return false, otherwise
+                // continue with operation
+
+                //therefore, callback must always return a bool
+                if (!result) {
+                    return false;
+                }
+            }
+        }
+        // return true so the user knows if the run through was successful
+        return true;
+    }
     #getRandomX() {
         return Math.abs(Math.round(Math.random() * this.width - 1));
     }
@@ -198,71 +196,3 @@ export class Coordinate {
         return !(this.hit && this.ship instanceof Ship);
     }
 }
-
-/*
-        const iCondition = orientation === "h" ? y + 1 : y + length + 1;
-        const jCondition = orientation === "h" ? x + length + 1 : x + 1;
-
-        //new checking loop for h
-        for (let i = y - 1; i < iCondition; i++) { //1,1
-            // check for i extreme < 0
-            if (i < 0) {
-                continue; // skip
-            }
-            // check for i extreme > grid.length
-            if (i >= this.grid.length) {
-                break; // stop altogether
-            }
-            for (let j = x - 1; j < jCondition; j++) {
-                // check for j extreme -1
-                if (j < 0) {
-                    continue; //skip
-                }
-                // check for j extreme > grid.length
-                if (j >= this.grid[i].length) {
-                    break; //skip altogether
-                }
-                let coordinate = this.grid[i][j];
-
-                if (coordinate.ship instanceof Ship || coordinate.ship === 0) {
-                    return false;
-                }
-            }
-        }
-
-              for (let i = y - 1; i < iCondition; i++) { //1,1
-            // check for i extreme < 0
-            if (i < 0) {
-                continue; // skip
-            }
-            // check for i extreme > grid.length
-            if (i >= this.grid.length) {
-                break; // stop altogether
-            }
-            for (let j = x - 1; j < jCondition; j++) {
-                // check for j extreme -1
-                if (j < 0) {
-                    continue; //skip
-                }
-                // check for j extreme > grid.length
-                if (j >= this.grid[i].length) {
-                    break; //skip altogether
-                }
-                let coordinate = this.grid[i][j];
-
-                const outerLeftEq = orientation === "h" ? i : j;
-                const innerLeftEq = orientation === "h" ? j : i;
-                const outerRightEq = orientation === "h" ? y : x;
-                const innerRightEq = orientation === "h" ? x : y;
-
-                // all
-                if ((outerLeftEq === outerRightEq && (innerLeftEq === innerRightEq - 1 || innerLeftEq === innerRightEq + length + 1)) || outerLeftEq === outerRightEq - 1 || outerLeftEq === outerRightEq + 1) {
-                    coordinate.ship = 0;
-                } else if (outerLeftEq === outerRightEq && !(innerLeftEq === innerRightEq - 1 || innerLeftEq === innerRightEq + length + 1)) {
-                    coordinate.ship = ship;
-                    ship.coordinates.push(coordinate);
-                }
-
-            }
-        }
-*/
