@@ -18,8 +18,9 @@ function leaveDroppable(ship, droppable) {
     ship.classList.remove(ABOVE_DROPPABLE);
 }
 
-export function shipDragFunction(e, gameboard) {
+export function shipDragFunction(e) {
     const ship = e.target;
+    const gameboard = ship.closest(".gameboard");
     const shipParent = ship.parentNode;
 
     let {orientation, length} = ship.dataset;
@@ -93,7 +94,7 @@ function moveShip(ship, gameboard, currentDroppable, shipParent, length, orienta
         leaveDroppable(ship, currentDroppable);
     } else {
         // put back to place
-        setTDClass(gameboard, length, orientation, oldX, oldY, false);
+        setTDClass(gameboard, length, orientation, oldX, oldY, true);
         document.body.removeChild(ship);
         shipParent.appendChild(ship);
     }
