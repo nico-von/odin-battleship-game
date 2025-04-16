@@ -71,9 +71,8 @@ export class Gameboard {
         }
 
 
-        let shipPlaceable = this.#runThroughCells(orientation, x, y, length, (coordinate, setX, setY) => {
-            if ((coordinate.ship instanceof Ship || coordinate.ship === 0) && ((setY > (y - 1) && setY < (y + length) && orientation === "v" && setX === x) ||
-                (setX > (x - 1) && setX < (x + length) && orientation === "h" && setY === y))) {
+        let shipPlaceable = this.#runThroughCells(orientation, x, y, length, (coordinate, coordinateOnShip) => {
+            if ((coordinate.ship instanceof Ship || coordinate.ship === 0) && coordinateOnShip) {
                 return false;
             } else {
                 return true;
@@ -90,9 +89,8 @@ export class Gameboard {
         }
 
         //placeShip
-        this.#runThroughCells(orientation, x, y, length, (coordinate, setX, setY) => {
-            if ((setY > (y - 1) && setY < (y + length) && orientation === "v" && setX === x) ||
-                (setX > (x - 1) && setX < (x + length) && orientation === "h" && setY === y)) {
+        this.#runThroughCells(orientation, x, y, length, (coordinate, coordinateOnShip) => {
+            if (coordinateOnShip) {
                 coordinate.ship = ship;
                 ship.coordinates.push({ coordinate, "isShip": true });
             } else {
@@ -130,7 +128,9 @@ export class Gameboard {
                     break;
                 }
                 let coordinate = this.grid[testY][testX];
-                let result = callback(coordinate, testX, testY);
+                let coordinateOnShip = ((testY > (y - 1) && testY < (y + length) && orientation === "v" && testX === x) ||
+                (testX > (x - 1) && testX < (x + length) && orientation === "h" && testY === y));
+                let result = callback(coordinate, coordinateOnShip);
                 // if result is false, return false, otherwise
                 // continue with operation
 
