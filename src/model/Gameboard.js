@@ -14,21 +14,33 @@ export class Gameboard {
         for (let i = 0; i < this.height; i++) {
             this.grid.push([])
             for (let j = 0; j < this.width; j++) {
-                this.grid[i].push(new Coordinate);
+                this.grid[i].push(new Coordinate(j, i));
             }
         }
     }
     #clearShipFromCoordinates(coordinates) {
         for (let coordinate of coordinates) {
-            coordinate.ship = null;
+            coordinate.coordinate.ship = null;
         }
     }
+
+    #setShipToCoordinates(coordinates, ship) {
+        for (let coordinate of coordinates) {
+            if (coordinate.isShip) {
+                coordinate.coordinate.ship = ship;
+            } else {
+                coordinate.coordinate.ship = 0;
+            }
+        }
+    }
+
     placeShip(orientation, ship, x, y) {
         // returns true if ship was placed correctly
         // returns false if not
         const length = ship.length;
-
+        let previousCoordinates = null;
         if (ship.coordinates.length > 0) {
+            previousCoordinates = ship.coordinates;
             this.#clearShipFromCoordinates(ship.coordinates);
             // this looks a little bit coupled
             ship.coordinates = [];
@@ -59,8 +71,9 @@ export class Gameboard {
         }
 
 
-        let shipPlaceable = this.#runThroughCells(orientation, x, y, length, (coordinate) => {
-            if (coordinate.ship instanceof Ship || coordinate.ship === 0) {
+        let shipPlaceable = this.#runThroughCells(orientation, x, y, length, (coordinate, setX, setY) => {
+            if ((coordinate.ship instanceof Ship || coordinate.ship === 0) && ((setY > (y - 1) && setY < (y + length) && orientation === "v" && setX === x) ||
+                (setX > (x - 1) && setX < (x + length) && orientation === "h" && setY === y))) {
                 return false;
             } else {
                 return true;
@@ -68,21 +81,28 @@ export class Gameboard {
         })
 
         if (!shipPlaceable) {
+            // restore coordinates to ship and previous state of coordinates
+            if (previousCoordinates) {
+                ship.coordinates = previousCoordinates;
+                this.#setShipToCoordinates(ship.coordinates, ship);
+            }
             return false;
         }
 
         //placeShip
         this.#runThroughCells(orientation, x, y, length, (coordinate, setX, setY) => {
-            if ((setY > y - 1 && setY < y + length + 1 && orientation === "v" && setX === x) ||
-                setX > x - 1 && setX < x + length + 1 && orientation === "h" && setY === y) {
+            if ((setY > (y - 1) && setY < (y + length) && orientation === "v" && setX === x) ||
+                (setX > (x - 1) && setX < (x + length) && orientation === "h" && setY === y)) {
                 coordinate.ship = ship;
-                ship.coordinates.push(coordinate);
+                ship.coordinates.push({ coordinate, "isShip": true });
             } else {
                 coordinate.ship = 0;
+                ship.coordinates.push({ coordinate, "isShip": false }); //added zeroes to ship coordinates to be cleared
             }
             return true;
         })
-        
+
+        // update placedShips
         let shipIndex = this.placedShips.findIndex((e) => e.ship == ship);
         if (shipIndex !== -1) {
             this.placedShips.splice(shipIndex, 1);
@@ -98,7 +118,7 @@ export class Gameboard {
     }
 
     #runThroughCells(orientation, x, y, length, callback) {
-        for (let i = -1; i < 1; i++) {
+        for (let i = -1; i < 2; i++) {
             for (let j = -1; j < length + 1; j++) {
 
                 const testX = orientation === "h" ? x + j : x + i;
@@ -123,12 +143,32 @@ export class Gameboard {
         // return true so the user knows if the run through was successful
         return true;
     }
-    #getRandomX() {
-        return Math.abs(Math.round(Math.random() * this.width - 1));
-    }
+    #getRandomXY() {
+        let existingShipCoordinates = this.placedShips.map((e) => e.ship.coordinates);
+        let existingXYPairs = [];
+        for (let i of existingShipCoordinates) {
+            for (let j of i) {
+                existingXYPairs.push({ "x": j.coordinate.x, "y": j.coordinate.y });
+            }
+        }
+        let useableXYPairs = [];
+        for (let y = 0; y < this.height; y++) {
+            for (let x = 0; x < this.width; x++) {
+                useableXYPairs.push({ x, y });
+            }
+        }
 
-    #getRandomY() {
-        return Math.abs(Math.round(Math.random() * this.height - 1));
+        useableXYPairs = useableXYPairs.filter(e => {
+            for (let pair of existingXYPairs) {
+                if (pair.x === e.x && pair.y === e.y) {
+                    return false;
+                }
+            }
+            return true;
+        })
+
+        let randomPair = useableXYPairs[Math.abs(Math.round(Math.random() * useableXYPairs.length - 1))];
+        return randomPair;
     }
 
     #getRandomDir() {
@@ -149,14 +189,17 @@ export class Gameboard {
             if (ship.length > this.width || ship.length > this.height) {
                 return;
             }
-
+            
             let shipPlaced = false;
             while (!shipPlaced) {
+                let randomDir = ship.length === 1 ? "v" : this.#getRandomDir();
+                let { x, y } = this.#getRandomXY();
+                
                 shipPlaced = this.placeShip(
-                    this.#getRandomDir(),
+                    randomDir,
                     ship,
-                    this.#getRandomX(),
-                    this.#getRandomY());
+                    x,
+                    y);
             }
         }
         return true;
@@ -187,9 +230,11 @@ export class Gameboard {
 }
 
 export class Coordinate {
-    constructor() {
+    constructor(x, y) {
         this.hit = false;
         this.ship = null;
+        this.x = x;
+        this.y = y;
     }
 
     get miss() {

@@ -146,13 +146,49 @@ describe("Gameboard placeships functionality", () => {
         expect(gameboard.placeShip("h", shipD, 4, 3)).toBeTruthy();
         expect(gameboard.placeShip("v", shipE, 6, 2)).toBeFalsy();
     })
+    test("Ships must be as long as they ought to be", () => {
+        let shipA = new Ship(3);
+        gameboard.placeShip("h", shipA, 0, 1);
+        expect(gameboard.grid[1][0].ship instanceof Ship).toBeTruthy();
+        expect(gameboard.grid[1][1].ship instanceof Ship).toBeTruthy();
+        expect(gameboard.grid[1][2].ship instanceof Ship).toBeTruthy();
+        expect(gameboard.grid[1][3].ship instanceof Ship).toBeFalsy();
+    })
+    test("Ship must have zer0es all around itself", () => {
+        let shipA = new Ship(1);
+        let shipB = new Ship(2);
+        gameboard.placeShip("h", shipA, 1, 1);
+        expect(gameboard.grid[1][1].ship instanceof Ship).toBeTruthy();
+        expect(gameboard.grid[0][0].ship).toBe(0);
+        expect(gameboard.grid[0][1].ship).toBe(0);
+        expect(gameboard.grid[0][2].ship).toBe(0);
+        expect(gameboard.grid[1][0].ship).toBe(0);
+        expect(gameboard.grid[1][2].ship).toBe(0);
+        expect(gameboard.grid[2][0].ship).toBe(0);
+        expect(gameboard.grid[2][1].ship).toBe(0);
+        expect(gameboard.grid[2][2].ship).toBe(0);
+        gameboard.placeShip("v", shipB, 7, 7);
+        expect(gameboard.grid[7][7].ship instanceof Ship).toBeTruthy();
+        expect(gameboard.grid[8][7].ship instanceof Ship).toBeTruthy();
+        expect(gameboard.grid[6][6].ship).toBe(0);
+        expect(gameboard.grid[6][7].ship).toBe(0);
+        expect(gameboard.grid[6][8].ship).toBe(0);
+        expect(gameboard.grid[7][6].ship).toBe(0);
+        expect(gameboard.grid[7][8].ship).toBe(0);
+        expect(gameboard.grid[8][6].ship).toBe(0);
+        expect(gameboard.grid[8][8].ship).toBe(0);
+        expect(gameboard.grid[9][6].ship).toBe(0);
+        expect(gameboard.grid[9][7].ship).toBe(0);
+        expect(gameboard.grid[9][8].ship).toBe(0);
+    })
+    
 
     test("Ships must not be placed next to each other, it must return false if a ship was next to it", () => {
         let shipA = new Ship(1);
         let shipB = new Ship(1);
         //diagonal
         expect(gameboard.placeShip("h", shipA, 0,1)).toBeTruthy();
-        expect(gameboard.placeShip("h", shipB, 2,1)).toBeFalsy();
+        expect(gameboard.placeShip("h", shipB, 1,2)).toBeFalsy();
 
         let shipC = new Ship(2);
         let shipD = new Ship(3);
@@ -267,6 +303,7 @@ describe("Gameboard allShipsSunk() functionality", () => {
     })
 })
 
+
 describe("Gameboard placeShipRandomly() functionality", () => {
     const shipList = 
     [
@@ -302,6 +339,7 @@ describe("Gameboard placeShipRandomly() functionality", () => {
         expect(gameboard.placeShipsRandomly(ships)).toBeFalsy();
     })
 })
+
 describe("Coordinate properties", () => {
     let coordinate;
     beforeEach(()=>{
