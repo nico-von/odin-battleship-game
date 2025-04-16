@@ -134,6 +134,15 @@ describe("Gameboard placeships functionality", () => {
         expect(shipAOnPlacedShip.x).toBe(1);
         expect(shipAOnPlacedShip.y).toBe(0);
     })
+    test("rePlacing ship on a nearby ship should return false on a 0", () => {
+        let shipA = new Ship(1);
+        let shipB = new Ship(2);
+        gameboard.placeShip("v", shipA, 0, 0);
+        gameboard.placeShip("h", shipB, 3, 1);
+        expect(gameboard.placeShip("v", shipA, 2, 1)).toBeFalsy();
+        expect(gameboard.placeShip("v", shipA, 5, 5)).toBeTruthy();
+        
+    })
     test("Ships must not overlap, it must return false if ship was not placed, true if it was", () => {
         let shipA = new Ship(2);
         let shipB = new Ship(2);
