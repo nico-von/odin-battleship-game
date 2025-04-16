@@ -4,14 +4,20 @@ import { setTDClass, setOnAffectedCells } from "../../view/gameboard/gameboard";
 const DROPPABLE_TD_CLASS = "cell-droppable"
 const ABOVE_DROPPABLE = "ship-on-droppable"
 
+function getShipFromModel(shipId, gameboardModel) {
+    let ship = gameboardModel.placedShips.find((e) => e.ship.id === shipId);
+    return ship;
+}
+
 function enterDroppable(droppable, ship, gameboard, length, orientation) {
     //things to do on entry of ship to cell droppable
     // make ship colour on entry to droppable
+
     let x = droppable.dataset.x;
     let y = droppable.dataset.y;
     x = Number(x);
     y = Number(y);
-    console.log(ship)
+    
     setOnAffectedCells(gameboard, length, orientation, x, y, (td) => {
         td.parentNode.classList.add(DROPPABLE_TD_CLASS);
     })
@@ -34,10 +40,13 @@ function leaveDroppable(droppable, ship, gameboard, length, orientation) {
     ship.classList.remove(ABOVE_DROPPABLE);
 }
 
-export function shipDragFunction(e) {
+export function shipDragFunction(e, gameboardModel) {
     const ship = e.target;
     const gameboard = ship.closest(".gameboard");
     const shipParent = ship.parentNode;
+    const shipId = ship.dataset.id;
+    const shipModelContainer = getShipFromModel(shipId, gameboardModel);
+    const shipModel = shipModelContainer.ship;
 
     let {orientation, length} = ship.dataset;
     let {x, y} = shipParent.dataset;
@@ -70,12 +79,20 @@ export function shipDragFunction(e) {
         if (!elemBelow) return;
 
         let droppableBelow = elemBelow.closest('.battlefield-user .battlefield-cell-empty .battlefield-cell-content');
+
         if (currentDroppable != droppableBelow) {
             if (currentDroppable) {
                 leaveDroppable(currentDroppable, ship, gameboard, length, orientation);
             }
             currentDroppable = droppableBelow;
             if (currentDroppable) {
+                // DETERMINE WHY THE CODE BELOW ALWAYS RETURNS TRUE!
+                // let currentDroppableX = currentDroppable.dataset.x;
+                // let currentDroppableY = currentDroppable.dataset.y;
+                // currentDroppableX = Number(currentDroppableX);
+                // currentDroppableY = Number(currentDroppableY);
+                // let placeable = gameboardModel.placeShip(orientation, shipModel, currentDroppableX, currentDroppableY);
+                // console.log(placeable, currentDroppableX, currentDroppableY, gameboardModel.grid);
                 enterDroppable(currentDroppable, ship, gameboard, length, orientation);
             }
         }
