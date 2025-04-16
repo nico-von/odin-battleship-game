@@ -11,7 +11,7 @@ function enterDroppable(droppable, ship, gameboard, length, orientation) {
     let y = droppable.dataset.y;
     x = Number(x);
     y = Number(y);
-
+    console.log(ship)
     setOnAffectedCells(gameboard, length, orientation, x, y, (td) => {
         td.parentNode.classList.add(DROPPABLE_TD_CLASS);
     })

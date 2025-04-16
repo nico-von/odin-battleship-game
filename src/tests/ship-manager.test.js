@@ -32,7 +32,10 @@ describe("makeShips controller should work as expected", () => {
             shipG,
             shipH
         ]
-        expect(ships).toEqual(expect.arrayContaining(expShips));
+        expect(ships.filter(e => e.length === 5).length).toBe(1);
+        expect(ships.filter(e => e.length === 4).length).toBe(2);
+        expect(ships.filter(e => e.length === 2).length).toBe(3);
+        expect(ships.filter(e => e.length === 1).length).toBe(2);
         expect(ships.length).toEqual(8);
     })
 });
