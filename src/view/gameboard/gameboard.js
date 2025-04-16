@@ -76,6 +76,7 @@ export function placeShip(gameboard, ship, orientation, x, y) {
         shipDiv.style.width = "2em";
         shipDiv.style.height = shipDivLengthEm;
     }
+    shipDiv.dataset.id = ship.id;
     shipDiv.dataset.length = ship.length;
     shipDiv.dataset.orientation = orientation;
     shipDiv.classList.add(SHIP);
