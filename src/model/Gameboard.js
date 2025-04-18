@@ -18,33 +18,56 @@ export class Gameboard {
             }
         }
     }
-    #clearShipFromCoordinates(coordinates) {
+    #clearShipFromCoordinates(coordinates, ship) {
         for (let coordinate of coordinates) {
+            let ships = coordinate.coordinate.ships;
+            if(ships.length > 0) {
+                //remove ship from coordinate.ships
+                let shipIndex = ships.findIndex(e => e === ship);
+                if (shipIndex !== -1) {
+                    ships.splice(shipIndex, 1);
+                }
+                return;
+            }
             coordinate.coordinate.ship = null;
         }
     }
 
-    #setShipToCoordinates(coordinates, ship) {
-        for (let coordinate of coordinates) {
-            if (coordinate.isShip) {
-                coordinate.coordinate.ship = ship;
+    // #setShipToCoordinates(coordinates, ship) {
+    //     for (let coordinate of coordinates) {
+    //         if (coordinate.isShip) {
+    //             coordinate.coordinate.ship = ship;
+    //         } else {
+    //             coordinate.coordinate.ship = 0;
+    //         }
+    //     }
+    // }
+
+    testIfShipCanBePlaced(orientation, ship, x, y) {
+        let length = ship.length;
+        let previousCoordinates = ship.coordinates;
+        
+        let shipPlaceable = this.#runThroughCells(orientation, x, y, length, (coordinate, coordinateOnShip) => {
+            // if ship is on any of its own coordinates
+            let onShipCoordinates = previousCoordinates.some(e => e.coordinate === coordinate);
+            // check if coordinate only contains this ship, in other words,
+            // coordinate.ships contains nothing else, hence length is 1
+            if (onShipCoordinates && coordinate.ships.length === 1) {
+                return true;
+            } 
+            if ((coordinate.ship instanceof Ship || coordinate.ship === 0) && coordinateOnShip) {
+                return false;
             } else {
-                coordinate.coordinate.ship = 0;
+                return true;
             }
-        }
+        })
+        return shipPlaceable;
     }
 
     placeShip(orientation, ship, x, y) {
         // returns true if ship was placed correctly
         // returns false if not
         const length = ship.length;
-        let previousCoordinates = null;
-        if (ship.coordinates.length > 0) {
-            previousCoordinates = ship.coordinates;
-            this.#clearShipFromCoordinates(ship.coordinates);
-            // this looks a little bit coupled
-            ship.coordinates = [];
-        }
 
         if (length > this.width || length > this.height) {
             return;
@@ -71,25 +94,33 @@ export class Gameboard {
         }
 
 
-        let shipPlaceable = this.#runThroughCells(orientation, x, y, length, (coordinate, coordinateOnShip) => {
-            if ((coordinate.ship instanceof Ship || coordinate.ship === 0) && coordinateOnShip) {
-                return false;
-            } else {
-                return true;
-            }
-        })
+        let shipPlaceable = this.testIfShipCanBePlaced(orientation, ship, x, y);
 
         if (!shipPlaceable) {
-            // restore coordinates to ship and previous state of coordinates
-            if (previousCoordinates) {
-                ship.coordinates = previousCoordinates;
-                this.#setShipToCoordinates(ship.coordinates, ship);
-            }
+            // // restore coordinates to ship and previous state of coordinates
+            // if (previousCoordinates) {
+            //     ship.coordinates = previousCoordinates;
+            //     this.#setShipToCoordinates(ship.coordinates, ship);
+            // }
             return false;
+        }
+
+        let previousCoordinates = null;
+        if (ship.coordinates.length > 0) {
+            previousCoordinates = ship.coordinates;
+            this.#clearShipFromCoordinates(ship.coordinates, ship);
+            // this looks a little bit coupled
+            ship.coordinates = [];
         }
 
         //placeShip
         this.#runThroughCells(orientation, x, y, length, (coordinate, coordinateOnShip) => {
+            // see if ship is already in coordinate.ships
+            let shipInCoordinates = coordinate.ships.some(e => e === ship);
+            if (!shipInCoordinates){
+                coordinate.ships.push(ship);
+            }
+
             if (coordinateOnShip) {
                 coordinate.ship = ship;
                 ship.coordinates.push({ coordinate, "isShip": true });
@@ -233,8 +264,7 @@ export class Coordinate {
     constructor(x, y) {
         this.hit = false;
         this.ship = null;
-        this.x = x;
-        this.y = y;
+        this.ships = [];
     }
 
     get miss() {
