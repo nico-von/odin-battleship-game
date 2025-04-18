@@ -18,17 +18,18 @@ export class Gameboard {
             }
         }
     }
-    #clearShipFromCoordinates(coordinates, ship) {
-        for (let coordinate of coordinates) {
-            let ships = coordinate.coordinate.ships;
-            if(ships.length > 0) {
+    #clearShipFromCoordinates(ship) {
+        for (let coordinate of ship.coordinates) {
+            if(coordinate.coordinate.ships.length > 1) {
                 //remove ship from coordinate.ships
-                let shipIndex = ships.findIndex(e => e === ship);
+                let shipIndex = coordinate.coordinate.ships.findIndex(e => e === ship);
                 if (shipIndex !== -1) {
-                    ships.splice(shipIndex, 1);
+                    coordinate.coordinate.ships.splice(shipIndex, 1);
                 }
                 return;
             }
+            // else clear ships
+            coordinate.coordinate.ships = [];
             coordinate.coordinate.ship = null;
         }
     }
@@ -105,10 +106,9 @@ export class Gameboard {
             return false;
         }
 
-        let previousCoordinates = null;
+        // clear ship from previous coordinates
         if (ship.coordinates.length > 0) {
-            previousCoordinates = ship.coordinates;
-            this.#clearShipFromCoordinates(ship.coordinates, ship);
+            this.#clearShipFromCoordinates(ship);
             // this looks a little bit coupled
             ship.coordinates = [];
         }

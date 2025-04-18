@@ -155,6 +155,12 @@ describe("Gameboard placeships functionality", () => {
         expect(gameboard.placeShip("h", shipD, 4, 3)).toBeTruthy();
         expect(gameboard.placeShip("v", shipE, 6, 2)).toBeFalsy();
     })
+    test("ship must be able to return to its place after moving", () => {
+        let shipA = new Ship(1);
+        expect(gameboard.placeShip("v", shipA, 0 ,0)).toBeTruthy();
+        expect(gameboard.placeShip("v", shipA, 9,8)).toBeTruthy();
+        expect(gameboard.placeShip("v", shipA, 0,0)).toBeTruthy();
+    })
     test("Ships must be as long as they ought to be", () => {
         let shipA = new Ship(3);
         gameboard.placeShip("h", shipA, 0, 1);

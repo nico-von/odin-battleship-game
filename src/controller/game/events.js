@@ -1,15 +1,18 @@
-let currentDroppable = null;
 import { setTDClass, setOnAffectedCells } from "../../view/gameboard/gameboard";
 
 const DROPPABLE_TD_CLASS = "cell-droppable"
 const ABOVE_DROPPABLE = "ship-on-droppable"
+
+let currentDroppable = null;
+let currX = 0;
+let currY = 0;
 
 function getShipFromModel(shipId, gameboardModel) {
     let ship = gameboardModel.placedShips.find((e) => e.ship.id === shipId);
     return ship;
 }
 
-function enterDroppable(droppable, gameboardModel, shipModel, ship, gameboard, length, orientation) {
+function enterDroppable(droppable, ship, gameboard, length, orientation) {
     //things to do on entry of ship to cell droppable
     // make ship colour on entry to droppable
 
@@ -17,14 +20,14 @@ function enterDroppable(droppable, gameboardModel, shipModel, ship, gameboard, l
     let y = droppable.dataset.y;
     x = Number(x);
     y = Number(y);
-    let placeable = gameboardModel.testIfShipCanBePlaced(orientation, shipModel, x, y);
-    if (placeable){
-        setOnAffectedCells(gameboard, length, orientation, x, y, (td) => {
-            td.parentNode.classList.add(DROPPABLE_TD_CLASS);
-        })
-    
-        ship.classList.add(ABOVE_DROPPABLE);
-    }
+
+
+    setOnAffectedCells(gameboard, length, orientation, x, y, (td) => {
+        td.parentNode.classList.add(DROPPABLE_TD_CLASS);
+    })
+
+    ship.classList.add(ABOVE_DROPPABLE);
+
 }
 
 function leaveDroppable(droppable, ship, gameboard, length, orientation) {
@@ -48,10 +51,10 @@ export function shipDragFunction(e, gameboardModel) {
     const shipId = ship.dataset.id;
     const shipModelContainer = getShipFromModel(shipId, gameboardModel);
     const shipModel = shipModelContainer.ship;
+    let placeable = false;
+    let { orientation, length } = ship.dataset;
+    let { x, y } = shipParent.dataset;
 
-    let {orientation, length} = ship.dataset;
-    let {x, y} = shipParent.dataset;
-    
     //set types 
     length = Number(length);
     x = Number(x);
@@ -87,7 +90,14 @@ export function shipDragFunction(e, gameboardModel) {
             }
             currentDroppable = droppableBelow;
             if (currentDroppable) {
-                enterDroppable(currentDroppable, gameboardModel, shipModel, ship, gameboard, length, orientation);
+                currX = Number(currentDroppable.dataset.x);
+                currY = Number(currentDroppable.dataset.y);
+                placeable = gameboardModel.testIfShipCanBePlaced(orientation, shipModel, currX, currY);
+                if (placeable) {
+                    enterDroppable(currentDroppable, ship, gameboard, length, orientation);
+                }
+                console.log(x, y, "CURR", currX, currY, gameboardModel.grid);
+            
             }
         }
     }
@@ -96,9 +106,15 @@ export function shipDragFunction(e, gameboardModel) {
 
     document.addEventListener('mousemove', onMouseMove);
 
-    ship.onmouseup = function() {
+    ship.onmouseup = function () {
         document.removeEventListener('mousemove', onMouseMove);
-        moveShip(ship, gameboard, currentDroppable, shipParent, length, orientation, x, y);
+        if (placeable) {
+            let placed = gameboardModel.placeShip(orientation, shipModel, currX, currY);
+            console.log(placed);
+            if (placed) {
+                moveShip(ship, gameboard, currentDroppable, shipParent, length, orientation, x, y);
+            } 
+        }
         ship.style.left = 0;
         ship.style.top = 0;
         ship.onmouseup = null;
@@ -108,13 +124,12 @@ export function shipDragFunction(e, gameboardModel) {
 function moveShip(ship, gameboard, currentDroppable, shipParent, length, orientation, oldX, oldY) {
     if (currentDroppable) {
         // this is where the ship is appended or place ship is called
-        let {x, y} = currentDroppable.dataset;
+        let { x, y } = currentDroppable.dataset;
         x = Number(x);
         y = Number(y);
 
-        
         setTDClass(gameboard, length, orientation, x, y, true);
-        
+
         document.body.removeChild(ship);
         currentDroppable.appendChild(ship);
         currentDroppable.removeChild
