@@ -194,11 +194,15 @@ describe("Gameboard placeships functionality", () => {
 
     test("Ships must not be placed next to each other, it must return false if a ship was next to it", () => {
         let shipA = new Ship(1);
-        let shipB = new Ship(1);
+        let shipBA = new Ship(1);
+        let shipBB = new Ship(1);
+        let shipBC = new Ship(1);
         //diagonal
-        expect(gameboard.placeShip("h", shipA, 0,1)).toBeTruthy();
-        expect(gameboard.placeShip("h", shipB, 1,2)).toBeFalsy();
-
+        expect(gameboard.placeShip("v", shipA, 0,1)).toBeTruthy();
+        expect(gameboard.placeShip("v", shipBA, 1,1)).toBeFalsy();
+        expect(gameboard.placeShip("v", shipBB, 1,2)).toBeFalsy();
+        expect(gameboard.placeShip("v", shipBC, 2,2)).toBeTruthy();
+        
         let shipC = new Ship(2);
         let shipD = new Ship(3);
         //vertical
