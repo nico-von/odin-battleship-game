@@ -9,7 +9,7 @@ function getShipFromModel(shipId, gameboardModel) {
     return ship;
 }
 
-function enterDroppable(droppable, ship, gameboard, length, orientation) {
+function enterDroppable(droppable, gameboardModel, shipModel, ship, gameboard, length, orientation) {
     //things to do on entry of ship to cell droppable
     // make ship colour on entry to droppable
 
@@ -17,13 +17,14 @@ function enterDroppable(droppable, ship, gameboard, length, orientation) {
     let y = droppable.dataset.y;
     x = Number(x);
     y = Number(y);
+    let placeable = gameboardModel.testIfShipCanBePlaced(orientation, shipModel, x, y);
+    if (placeable){
+        setOnAffectedCells(gameboard, length, orientation, x, y, (td) => {
+            td.parentNode.classList.add(DROPPABLE_TD_CLASS);
+        })
     
-    setOnAffectedCells(gameboard, length, orientation, x, y, (td) => {
-        td.parentNode.classList.add(DROPPABLE_TD_CLASS);
-    })
-
-    ship.classList.add(ABOVE_DROPPABLE);
-
+        ship.classList.add(ABOVE_DROPPABLE);
+    }
 }
 
 function leaveDroppable(droppable, ship, gameboard, length, orientation) {
@@ -86,14 +87,7 @@ export function shipDragFunction(e, gameboardModel) {
             }
             currentDroppable = droppableBelow;
             if (currentDroppable) {
-                // DETERMINE WHY THE CODE BELOW ALWAYS RETURNS TRUE!
-                // let currentDroppableX = currentDroppable.dataset.x;
-                // let currentDroppableY = currentDroppable.dataset.y;
-                // currentDroppableX = Number(currentDroppableX);
-                // currentDroppableY = Number(currentDroppableY);
-                // let placeable = gameboardModel.placeShip(orientation, shipModel, currentDroppableX, currentDroppableY);
-                // console.log(placeable, currentDroppableX, currentDroppableY, gameboardModel.grid);
-                enterDroppable(currentDroppable, ship, gameboard, length, orientation);
+                enterDroppable(currentDroppable, gameboardModel, shipModel, ship, gameboard, length, orientation);
             }
         }
     }
