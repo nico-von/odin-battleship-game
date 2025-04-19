@@ -4,30 +4,28 @@ const DROPPABLE_TD_CLASS = "cell-droppable"
 const ABOVE_DROPPABLE = "ship-on-droppable"
 
 let currentDroppable = null;
-let currX = 0;
-let currY = 0;
 
 function getShipFromModel(shipId, gameboardModel) {
     let ship = gameboardModel.placedShips.find((e) => e.ship.id === shipId);
     return ship;
 }
 
-function enterDroppable(droppable, ship, gameboard, length, orientation) {
-    //things to do on entry of ship to cell droppable
-    // make ship colour on entry to droppable
-
+function enterDroppable(droppable, gameboardModel, shipModel, ship, gameboard, length, orientation) {
     let x = droppable.dataset.x;
     let y = droppable.dataset.y;
     x = Number(x);
     y = Number(y);
 
+    let placeable = gameboardModel.testIfShipCanBePlaced(orientation, shipModel, x, y);
+    if (placeable) {
+        setOnAffectedCells(gameboard, length, orientation, x, y, (td) => {
+            td.parentNode.classList.add(DROPPABLE_TD_CLASS);
+        })
 
-    setOnAffectedCells(gameboard, length, orientation, x, y, (td) => {
-        td.parentNode.classList.add(DROPPABLE_TD_CLASS);
-    })
-
-    ship.classList.add(ABOVE_DROPPABLE);
-
+        ship.classList.add(ABOVE_DROPPABLE);
+        return true;
+    }
+    return false;
 }
 
 function leaveDroppable(droppable, ship, gameboard, length, orientation) {
@@ -90,14 +88,7 @@ export function shipDragFunction(e, gameboardModel) {
             }
             currentDroppable = droppableBelow;
             if (currentDroppable) {
-                currX = Number(currentDroppable.dataset.x);
-                currY = Number(currentDroppable.dataset.y);
-                placeable = gameboardModel.testIfShipCanBePlaced(orientation, shipModel, currX, currY);
-                if (placeable) {
-                    enterDroppable(currentDroppable, ship, gameboard, length, orientation);
-                }
-                console.log(x, y, "CURR", currX, currY, gameboardModel.grid);
-            
+                placeable = enterDroppable(currentDroppable, gameboardModel, shipModel, ship, gameboard, length, orientation);
             }
         }
     }
@@ -108,36 +99,41 @@ export function shipDragFunction(e, gameboardModel) {
 
     ship.onmouseup = function () {
         document.removeEventListener('mousemove', onMouseMove);
-        if (placeable) {
-            let placed = gameboardModel.placeShip(orientation, shipModel, currX, currY);
-            console.log(placed);
-            if (placed) {
-                moveShip(ship, gameboard, currentDroppable, shipParent, length, orientation, x, y);
-            } 
+        let shipMoved = false;
+        if (placeable && currentDroppable) {
+            shipMoved = moveShip(ship, gameboard, currentDroppable, length, orientation, gameboardModel, shipModel);
         }
+        if (!placeable || !currentDroppable || !shipMoved) {
+            // put back to place
+            putShipBackToPlace(gameboard, shipParent, ship, length, orientation, x, y);
+        }
+
         ship.style.left = 0;
         ship.style.top = 0;
         ship.onmouseup = null;
     }
 }
 
-function moveShip(ship, gameboard, currentDroppable, shipParent, length, orientation, oldX, oldY) {
-    if (currentDroppable) {
-        // this is where the ship is appended or place ship is called
-        let { x, y } = currentDroppable.dataset;
-        x = Number(x);
-        y = Number(y);
+function putShipBackToPlace(gameboard, shipParent, ship, length, orientation, oldX, oldY) {
+    setTDClass(gameboard, length, orientation, oldX, oldY, true);
+    document.body.removeChild(ship);
+    shipParent.appendChild(ship);
+}
 
+function moveShip(ship, gameboard, droppable, length, orientation, gameboardModel, shipModel) {
+    let x = droppable.dataset.x;
+    let y = droppable.dataset.y;
+    x = Number(x);
+    y = Number(y);
+    let placed = gameboardModel.placeShip(orientation, shipModel, x, y);
+    if (placed) {
         setTDClass(gameboard, length, orientation, x, y, true);
-
         document.body.removeChild(ship);
-        currentDroppable.appendChild(ship);
-        currentDroppable.removeChild
-        leaveDroppable(currentDroppable, ship, gameboard, length, orientation);
+        droppable.appendChild(ship);
+        droppable.removeChild
+        leaveDroppable(droppable, ship, gameboard, length, orientation);
+        return true;
     } else {
-        // put back to place
-        setTDClass(gameboard, length, orientation, oldX, oldY, true);
-        document.body.removeChild(ship);
-        shipParent.appendChild(ship);
+        return false;
     }
 }
