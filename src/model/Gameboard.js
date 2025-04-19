@@ -34,16 +34,6 @@ export class Gameboard {
         }
     }
 
-    // #setShipToCoordinates(coordinates, ship) {
-    //     for (let coordinate of coordinates) {
-    //         if (coordinate.isShip) {
-    //             coordinate.coordinate.ship = ship;
-    //         } else {
-    //             coordinate.coordinate.ship = 0;
-    //         }
-    //     }
-    // }
-
     testIfShipCanBePlaced(orientation, ship, x, y) {
         let length = ship.length;
         let previousCoordinates = ship.coordinates;
@@ -99,11 +89,6 @@ export class Gameboard {
         let shipPlaceable = this.testIfShipCanBePlaced(orientation, ship, x, y);
 
         if (!shipPlaceable) {
-            // // restore coordinates to ship and previous state of coordinates
-            // if (previousCoordinates) {
-            //     ship.coordinates = previousCoordinates;
-            //     this.#setShipToCoordinates(ship.coordinates, ship);
-            // }
             return false;
         }
 
