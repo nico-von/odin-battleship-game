@@ -26,7 +26,7 @@ export class Gameboard {
                 if (shipIndex !== -1) {
                     coordinate.coordinate.ships.splice(shipIndex, 1);
                 }
-                return;
+                continue;
             }
             // else clear ships
             coordinate.coordinate.ships = [];
@@ -49,6 +49,7 @@ export class Gameboard {
         let previousCoordinates = ship.coordinates;
         
         let shipPlaceable = this.#runThroughCells(orientation, x, y, length, (coordinate, coordinateOnShip) => {
+            
             // if ship is on any of its own coordinates
             let onShipCoordinates = previousCoordinates.some(e => e.coordinate === coordinate);
             // check if coordinate only contains this ship, in other words,
