@@ -37,7 +37,31 @@ export class Gameboard {
     testIfShipCanBePlaced(orientation, ship, x, y) {
         let length = ship.length;
         let previousCoordinates = ship.coordinates;
-        
+
+        if (length > this.width || length > this.height) {
+            return false;
+        }
+
+        if (x > this.width - 1) {
+            return false;
+        }
+
+        if (y > this.height - 1) {
+            return false;
+        }
+
+        if (orientation === "v" && ((y + length) > (this.height))) {
+            //this.height was used instead of this.height - 1
+            // because y is the where the ship will be initially placed
+            // and therefore the equation is really 
+            // ((y - 1 + length) > (this.height - 1))   
+            return false;
+        }
+
+        if (orientation === "h" && ((x + length) > (this.width))) {
+            return false;
+        }
+
         let shipPlaceable = this.#runThroughCells(orientation, x, y, length, (coordinate, coordinateOnShip) => {
             
             // if ship is on any of its own coordinates
@@ -60,31 +84,6 @@ export class Gameboard {
         // returns true if ship was placed correctly
         // returns false if not
         const length = ship.length;
-
-        if (length > this.width || length > this.height) {
-            return;
-        }
-
-        if (x > this.width - 1) {
-            return;
-        }
-
-        if (y > this.height - 1) {
-            return;
-        }
-
-        if (orientation === "v" && ((y + length) > (this.height))) {
-            //this.height was used instead of this.height - 1
-            // because y is the where the ship will be initially placed
-            // and therefore the equation is really 
-            // ((y - 1 + length) > (this.height - 1))   
-            return;
-        }
-
-        if (orientation === "h" && ((x + length) > (this.width))) {
-            return;
-        }
-
 
         let shipPlaceable = this.testIfShipCanBePlaced(orientation, ship, x, y);
 
