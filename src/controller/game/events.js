@@ -5,20 +5,26 @@ const ABOVE_DROPPABLE = "ship-on-droppable"
 
 let currentDroppable = null;
 
+function getPlaceableXY(droppable, orientation, offsetX, offsetY) {
+    let x = droppable.dataset.x;
+    let y = droppable.dataset.y;
+    x = Number(x);
+    y = Number(y);
+    let placeableX = orientation === "h" ? offsetX + x : x;
+    let placeableY = orientation === "v" ? offsetY + y: y;
+    return { placeableX, placeableY}
+}
 function getShipFromModel(shipId, gameboardModel) {
     let ship = gameboardModel.placedShips.find((e) => e.ship.id === shipId);
     return ship;
 }
 
-function enterDroppable(droppable, gameboardModel, shipModel, ship, gameboard, length, orientation) {
-    let x = droppable.dataset.x;
-    let y = droppable.dataset.y;
-    x = Number(x);
-    y = Number(y);
+function enterDroppable(droppable, gameboardModel, shipModel, ship, gameboard, length, orientation, offsetX, offsetY) {
+    const {placeableX, placeableY} = getPlaceableXY(droppable, orientation, offsetX, offsetY);
 
-    let placeable = gameboardModel.testIfShipCanBePlaced(orientation, shipModel, x, y);
+    let placeable = gameboardModel.testIfShipCanBePlaced(orientation, shipModel, placeableX, placeableY);
     if (placeable) {
-        setOnAffectedCells(gameboard, length, orientation, x, y, (td) => {
+        setOnAffectedCells(gameboard, length, orientation, placeableX, placeableY, (td) => {
             td.parentNode.classList.add(DROPPABLE_TD_CLASS);
         })
 
@@ -28,14 +34,11 @@ function enterDroppable(droppable, gameboardModel, shipModel, ship, gameboard, l
     return false;
 }
 
-function leaveDroppable(droppable, ship, gameboard, length, orientation) {
+function leaveDroppable(droppable, ship, gameboard, length, orientation, offsetX, offsetY) {
     //things to do on exit of ship to cell droppable
-    let x = droppable.dataset.x;
-    let y = droppable.dataset.y;
-    x = Number(x);
-    y = Number(y);
+    let {placeableX, placeableY} = getPlaceableXY(droppable, orientation, offsetX, offsetY);
 
-    setOnAffectedCells(gameboard, length, orientation, x, y, (td) => {
+    setOnAffectedCells(gameboard, length, orientation, placeableX, placeableY, (td) => {
         td.parentNode.classList.remove(DROPPABLE_TD_CLASS);
     })
 
@@ -52,11 +55,20 @@ export function shipDragFunction(e, gameboardModel) {
     let placeable = false;
     let { orientation, length } = ship.dataset;
     let { x, y } = shipParent.dataset;
+    ship.hidden = true;
+    let initialElementFromPoint = document.elementFromPoint(e.clientX, e.clientY);
+    ship.hidden = false;
+    let initialMouseX = initialElementFromPoint.dataset.x;
+    let initialMouseY = initialElementFromPoint.dataset.y;
 
-    //set types 
     length = Number(length);
     x = Number(x);
     y = Number(y);
+    initialMouseX = Number(initialMouseX);
+    initialMouseY = Number(initialMouseY);
+
+    let offsetX = x - initialMouseX;
+    let offsetY = y - initialMouseY;
 
     // remove busy status of original cells
     setTDClass(gameboard, length, orientation, x, y, false);
@@ -81,14 +93,15 @@ export function shipDragFunction(e, gameboardModel) {
         if (!elemBelow) return;
 
         let droppableBelow = elemBelow.closest('.battlefield-user .battlefield-cell-empty .battlefield-cell-content');
-
+        
         if (currentDroppable != droppableBelow) {
             if (currentDroppable) {
-                leaveDroppable(currentDroppable, ship, gameboard, length, orientation);
+                leaveDroppable(currentDroppable, ship, gameboard, length, orientation, offsetX, offsetY);
             }
             currentDroppable = droppableBelow;
             if (currentDroppable) {
-                placeable = enterDroppable(currentDroppable, gameboardModel, shipModel, ship, gameboard, length, orientation);
+                
+                placeable = enterDroppable(currentDroppable, gameboardModel, shipModel, ship, gameboard, length, orientation, offsetX, offsetY);
             }
         }
     }
@@ -101,13 +114,12 @@ export function shipDragFunction(e, gameboardModel) {
         document.removeEventListener('mousemove', onMouseMove);
         let shipMoved = false;
         if (placeable && currentDroppable) {
-            shipMoved = moveShip(ship, gameboard, currentDroppable, length, orientation, gameboardModel, shipModel);
+            shipMoved = moveShip(ship, gameboard, currentDroppable, length, orientation, gameboardModel, shipModel, offsetX, offsetY);
         }
         if (!placeable || !currentDroppable || !shipMoved) {
             // put back to place
             putShipBackToPlace(gameboard, shipParent, ship, length, orientation, x, y);
         }
-
         ship.style.left = 0;
         ship.style.top = 0;
         ship.onmouseup = null;
@@ -120,18 +132,16 @@ function putShipBackToPlace(gameboard, shipParent, ship, length, orientation, ol
     shipParent.appendChild(ship);
 }
 
-function moveShip(ship, gameboard, droppable, length, orientation, gameboardModel, shipModel) {
-    let x = droppable.dataset.x;
-    let y = droppable.dataset.y;
-    x = Number(x);
-    y = Number(y);
-    let placed = gameboardModel.placeShip(orientation, shipModel, x, y);
+function moveShip(ship, gameboard, droppable, length, orientation, gameboardModel, shipModel, offsetX, offsetY) {
+    let {placeableX, placeableY} = getPlaceableXY(droppable, orientation, offsetX, offsetY);
+    let cellToPlaceShip = document.querySelector(`.battlefield-user div[data-x="${placeableX}"][data-y="${placeableY}"]`); 
+    
+    let placed = gameboardModel.placeShip(orientation, shipModel, placeableX, placeableY);
     if (placed) {
-        setTDClass(gameboard, length, orientation, x, y, true);
+        setTDClass(gameboard, length, orientation, placeableX, placeableY, true);
         document.body.removeChild(ship);
-        droppable.appendChild(ship);
-        droppable.removeChild
-        leaveDroppable(droppable, ship, gameboard, length, orientation);
+        cellToPlaceShip.appendChild(ship);
+        leaveDroppable(droppable, ship, gameboard, length, orientation, offsetX, offsetY);
         return true;
     } else {
         return false;

@@ -13,7 +13,6 @@ export async function initialiseGame() {
         const {ship, orientation, x, y} = placedShip;
         placeShip(userGameboardUI, ship, orientation, x, y);
     }
-    console.log(userGameboard.grid);
     allowDragging(userGameboardUI, userGameboard, shipDragFunction);
 }
 
