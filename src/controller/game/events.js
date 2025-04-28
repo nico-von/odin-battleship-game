@@ -134,7 +134,7 @@ function putShipBackToPlace(gameboard, shipParent, ship, length, orientation, ol
 
 function moveShip(ship, gameboard, droppable, length, orientation, gameboardModel, shipModel, offsetX, offsetY) {
     let {placeableX, placeableY} = getPlaceableXY(droppable, orientation, offsetX, offsetY);
-    let cellToPlaceShip = document.querySelector(`.battlefield-user div[data-x="${placeableX}"][data-y="${placeableY}"]`); 
+    let cellToPlaceShip = gameboard.querySelector(`div[data-x="${placeableX}"][data-y="${placeableY}"]`); 
     
     let placed = gameboardModel.placeShip(orientation, shipModel, placeableX, placeableY);
     if (placed) {
