@@ -38,10 +38,13 @@ export class Gameboard {
         let length = ship.length;
         let previousCoordinates = ship.coordinates;
 
+        if (isNaN(x) || isNaN(y)) {
+            return false;
+        }
         if (x < 0 || y < 0) {
             return false;
         }
-        
+
         if (length > this.width || length > this.height) {
             return false;
         }

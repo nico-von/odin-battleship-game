@@ -12,6 +12,7 @@ function getPlaceableXY(droppable, orientation, offsetX, offsetY) {
     y = Number(y);
     let placeableX = orientation === "h" ? offsetX + x : x;
     let placeableY = orientation === "v" ? offsetY + y: y;
+    console.log(placeableX, placeableY);
     return { placeableX, placeableY}
 }
 function getShipFromModel(shipId, gameboardModel) {
