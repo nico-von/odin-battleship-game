@@ -1,4 +1,4 @@
-import { setTDClass, setOnAffectedCells } from "../../view/gameboard/gameboard";
+import { setTDClass, setOnAffectedCells, placeShip } from "../../view/gameboard/gameboard";
 
 const DROPPABLE_TD_CLASS = "cell-droppable"
 const ABOVE_DROPPABLE = "ship-on-droppable"
@@ -15,8 +15,8 @@ function getPlaceableXY(droppable, orientation, offsetX, offsetY) {
     return { placeableX, placeableY}
 }
 function getShipFromModel(shipId, gameboardModel) {
-    let ship = gameboardModel.placedShips.find((e) => e.ship.id === shipId);
-    return ship;
+    let shipModelContainer = gameboardModel.placedShips.find((e) => e.ship.id === shipId);
+    return shipModelContainer;
 }
 
 function enterDroppable(droppable, gameboardModel, shipModel, ship, gameboard, length, orientation, offsetX, offsetY) {
@@ -148,6 +148,28 @@ function moveShip(ship, gameboard, droppable, length, orientation, gameboardMode
     }
 }
 
-export function rotateShipFunction(e, gameboardModel){
-    console.log(e.target);
+export function rotateShipFunction(e, gameboardUI, gameboardModel){
+    const ship = e.target;
+    console.log(e);
+    let {length, orientation, id} = ship.dataset;
+    const shipParent = ship.parentNode;
+    let { x, y } = shipParent.dataset;
+    const shipModelContainer = getShipFromModel(id, gameboardModel);
+    const shipModel = shipModelContainer.ship;
+
+    length = Number(length);
+    x = Number(x);
+    y = Number(y);
+
+    if(length > 1) {
+        orientation = orientation === "v" ? "h" : "v";
+    }
+
+    let placed = gameboardModel.placeShip(orientation, shipModel, x, y);
+    console.log(placed);
+    if (placed) {
+        ship.remove();
+        placeShip(gameboardUI, shipModel, orientation, x, y);
+    }
+
 }

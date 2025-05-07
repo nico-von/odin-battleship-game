@@ -32,7 +32,7 @@ function enableEvents(gameboardUI, gameboardModel) {
 
         switch(target.className) {
             case 'ship':
-                rotateShipFunction(e, gameboardModel);
+                rotateShipFunction(e, gameboardUI, gameboardModel);
                 break;
         }
     })
