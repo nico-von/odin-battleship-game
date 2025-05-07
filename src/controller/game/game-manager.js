@@ -13,16 +13,16 @@ export async function initialiseGame() {
         const {ship, orientation, x, y} = placedShip;
         placeShip(userGameboardUI, ship, orientation, x, y);
     }
-    allowDragging(userGameboardUI, userGameboard, shipDragFunction);
+    enableEvents(userGameboardUI, userGameboard);
 }
 
-function allowDragging(gameboardUI, gameboardModel, dragFunction) {
+function enableEvents(gameboardUI, gameboardModel) {
     gameboardUI.addEventListener('mousedown', (e) => {
         let target = e.target;
         
         switch(target.className) {
             case 'ship':
-                dragFunction(e, gameboardModel);
+                shipDragFunction(e, gameboardModel);
                 break;
         }
     })
