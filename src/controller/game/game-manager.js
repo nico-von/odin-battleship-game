@@ -27,7 +27,7 @@ function enableEvents(gameboardUI, gameboardModel) {
         }
     })
 
-    gameboardUI.addEventListener('click', (e) => {
+    gameboardUI.addEventListener('dblclick', (e) => {
         let target = e.target;
 
         switch(target.className) {

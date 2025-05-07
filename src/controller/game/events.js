@@ -166,7 +166,6 @@ export function rotateShipFunction(e, gameboardUI, gameboardModel){
     }
 
     let placed = gameboardModel.placeShip(orientation, shipModel, x, y);
-    console.log(placed);
     if (placed) {
         ship.remove();
         placeShip(gameboardUI, shipModel, orientation, x, y);
