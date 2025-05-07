@@ -148,3 +148,7 @@ function moveShip(ship, gameboard, droppable, length, orientation, gameboardMode
         return false;
     }
 }
+
+export function rotateShip(e, gameboardModel){
+    console.log(e.target);
+}
