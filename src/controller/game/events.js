@@ -149,6 +149,6 @@ function moveShip(ship, gameboard, droppable, length, orientation, gameboardMode
     }
 }
 
-export function rotateShip(e, gameboardModel){
+export function rotateShipFunction(e, gameboardModel){
     console.log(e.target);
 }

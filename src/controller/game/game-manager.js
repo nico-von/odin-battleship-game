@@ -2,7 +2,7 @@ import { userShips, rivalShips } from "./ships";
 import { userGameboard, rivalGameboard } from "./gameboards";
 import { userGameboardUI, rivalGameboardUI } from "../../view/navigation/main";
 import { placeShip } from "../../view/gameboard/gameboard";
-import { shipDragFunction } from "./events";
+import { rotateShipFunction, shipDragFunction } from "./events";
 
 export async function initialiseGame() {
     userGameboard.placeShipsRandomly(userShips)
@@ -23,6 +23,16 @@ function enableEvents(gameboardUI, gameboardModel) {
         switch(target.className) {
             case 'ship':
                 shipDragFunction(e, gameboardModel);
+                break;
+        }
+    })
+
+    gameboardUI.addEventListener('click', (e) => {
+        let target = e.target;
+
+        switch(target.className) {
+            case 'ship':
+                rotateShipFunction(e, gameboardModel);
                 break;
         }
     })
