@@ -11,8 +11,8 @@ function getPlaceableXY(droppable, orientation, offsetX, offsetY) {
     x = Number(x);
     y = Number(y);
     let placeableX = orientation === "h" ? offsetX + x : x;
-    let placeableY = orientation === "v" ? offsetY + y: y;
-    return { placeableX, placeableY}
+    let placeableY = orientation === "v" ? offsetY + y : y;
+    return { placeableX, placeableY }
 }
 function getShipFromModel(shipId, gameboardModel) {
     let shipModelContainer = gameboardModel.placedShips.find((e) => e.ship.id === shipId);
@@ -20,9 +20,10 @@ function getShipFromModel(shipId, gameboardModel) {
 }
 
 function enterDroppable(droppable, gameboardModel, shipModel, ship, gameboard, length, orientation, offsetX, offsetY) {
-    const {placeableX, placeableY} = getPlaceableXY(droppable, orientation, offsetX, offsetY);
+    const { placeableX, placeableY } = getPlaceableXY(droppable, orientation, offsetX, offsetY);
 
     let placeable = gameboardModel.testIfShipCanBePlaced(orientation, shipModel, placeableX, placeableY);
+    console.log(placeable);
     if (placeable) {
         setOnAffectedCells(gameboard, length, orientation, placeableX, placeableY, (td) => {
             td.parentNode.classList.add(DROPPABLE_TD_CLASS);
@@ -36,7 +37,7 @@ function enterDroppable(droppable, gameboardModel, shipModel, ship, gameboard, l
 
 function leaveDroppable(droppable, ship, gameboard, length, orientation, offsetX, offsetY) {
     //things to do on exit of ship to cell droppable
-    let {placeableX, placeableY} = getPlaceableXY(droppable, orientation, offsetX, offsetY);
+    let { placeableX, placeableY } = getPlaceableXY(droppable, orientation, offsetX, offsetY);
 
     setOnAffectedCells(gameboard, length, orientation, placeableX, placeableY, (td) => {
         td.parentNode.classList.remove(DROPPABLE_TD_CLASS);
@@ -93,14 +94,14 @@ export function shipDragFunction(e, gameboardModel) {
         if (!elemBelow) return;
 
         let droppableBelow = elemBelow.closest('.battlefield-user .battlefield-cell-empty .battlefield-cell-content');
-        
+
         if (currentDroppable != droppableBelow) {
             if (currentDroppable) {
                 leaveDroppable(currentDroppable, ship, gameboard, length, orientation, offsetX, offsetY);
             }
             currentDroppable = droppableBelow;
             if (currentDroppable) {
-                
+
                 placeable = enterDroppable(currentDroppable, gameboardModel, shipModel, ship, gameboard, length, orientation, offsetX, offsetY);
             }
         }
@@ -133,9 +134,9 @@ function putShipBackToPlace(gameboard, shipParent, ship, length, orientation, ol
 }
 
 function moveShip(ship, gameboard, droppable, length, orientation, gameboardModel, shipModel, offsetX, offsetY) {
-    let {placeableX, placeableY} = getPlaceableXY(droppable, orientation, offsetX, offsetY);
-    let cellToPlaceShip = gameboard.querySelector(`div[data-x="${placeableX}"][data-y="${placeableY}"]`); 
-    
+    let { placeableX, placeableY } = getPlaceableXY(droppable, orientation, offsetX, offsetY);
+    let cellToPlaceShip = gameboard.querySelector(`div[data-x="${placeableX}"][data-y="${placeableY}"]`);
+
     let placed = gameboardModel.placeShip(orientation, shipModel, placeableX, placeableY);
     if (placed) {
         setTDClass(gameboard, length, orientation, placeableX, placeableY, true);
@@ -148,10 +149,10 @@ function moveShip(ship, gameboard, droppable, length, orientation, gameboardMode
     }
 }
 
-export function rotateShipFunction(e, gameboardUI, gameboardModel){
+export function rotateShipFunction(e, gameboardUI, gameboardModel) {
     const ship = e.target;
     console.log(e);
-    let {length, orientation, id} = ship.dataset;
+    let { length, orientation, id } = ship.dataset;
     const shipParent = ship.parentNode;
     let { x, y } = shipParent.dataset;
     const shipModelContainer = getShipFromModel(id, gameboardModel);
@@ -161,14 +162,20 @@ export function rotateShipFunction(e, gameboardUI, gameboardModel){
     x = Number(x);
     y = Number(y);
 
-    if(length > 1) {
-        orientation = orientation === "v" ? "h" : "v";
+    if (length <= 1) {
+        return;
     }
 
-    let placed = gameboardModel.placeShip(orientation, shipModel, x, y);
+    let newOrientation = orientation === "v" ? "h" : "v";
+
+
+    let placed = gameboardModel.placeShip(newOrientation, shipModel, x, y);
     if (placed) {
+        setTDClass(gameboardUI, length, orientation, x, y, false);
         ship.remove();
-        placeShip(gameboardUI, shipModel, orientation, x, y);
+        // remove busy status of original cells
+        placeShip(gameboardUI, shipModel, newOrientation, x, y);
+        setTDClass(gameboardUI, length, newOrientation, x, y, true);
     }
 
 }
