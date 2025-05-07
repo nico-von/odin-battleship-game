@@ -22,7 +22,7 @@ function enableEvents(gameboardUI, gameboardModel) {
         
         switch(target.className) {
             case 'ship':
-                shipDragFunction(e, gameboardModel);
+                shipDragFunction(e, gameboardUI, gameboardModel);
                 break;
         }
     })

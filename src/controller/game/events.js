@@ -23,7 +23,6 @@ function enterDroppable(droppable, gameboardModel, shipModel, ship, gameboard, l
     const { placeableX, placeableY } = getPlaceableXY(droppable, orientation, offsetX, offsetY);
 
     let placeable = gameboardModel.testIfShipCanBePlaced(orientation, shipModel, placeableX, placeableY);
-    console.log(placeable);
     if (placeable) {
         setOnAffectedCells(gameboard, length, orientation, placeableX, placeableY, (td) => {
             td.parentNode.classList.add(DROPPABLE_TD_CLASS);
@@ -46,9 +45,8 @@ function leaveDroppable(droppable, ship, gameboard, length, orientation, offsetX
     ship.classList.remove(ABOVE_DROPPABLE);
 }
 
-export function shipDragFunction(e, gameboardModel) {
+export function shipDragFunction(e, gameboardUI, gameboardModel) {
     const ship = e.target;
-    const gameboard = ship.closest(".gameboard");
     const shipParent = ship.parentNode;
     const shipId = ship.dataset.id;
     const shipModelContainer = getShipFromModel(shipId, gameboardModel);
@@ -72,7 +70,7 @@ export function shipDragFunction(e, gameboardModel) {
     let offsetY = y - initialMouseY;
 
     // remove busy status of original cells
-    setTDClass(gameboard, length, orientation, x, y, false);
+    setTDClass(gameboardUI, length, orientation, x, y, false);
 
     let shiftX = e.clientX - ship.getBoundingClientRect().left;
     let shiftY = e.clientY - ship.getBoundingClientRect().top;
@@ -97,12 +95,12 @@ export function shipDragFunction(e, gameboardModel) {
 
         if (currentDroppable != droppableBelow) {
             if (currentDroppable) {
-                leaveDroppable(currentDroppable, ship, gameboard, length, orientation, offsetX, offsetY);
+                leaveDroppable(currentDroppable, ship, gameboardUI, length, orientation, offsetX, offsetY);
             }
             currentDroppable = droppableBelow;
             if (currentDroppable) {
 
-                placeable = enterDroppable(currentDroppable, gameboardModel, shipModel, ship, gameboard, length, orientation, offsetX, offsetY);
+                placeable = enterDroppable(currentDroppable, gameboardModel, shipModel, ship, gameboardUI, length, orientation, offsetX, offsetY);
             }
         }
     }
@@ -115,11 +113,11 @@ export function shipDragFunction(e, gameboardModel) {
         document.removeEventListener('mousemove', onMouseMove);
         let shipMoved = false;
         if (placeable && currentDroppable) {
-            shipMoved = moveShip(ship, gameboard, currentDroppable, length, orientation, gameboardModel, shipModel, offsetX, offsetY);
+            shipMoved = moveShip(ship, gameboardUI, currentDroppable, length, orientation, gameboardModel, shipModel, offsetX, offsetY);
         }
         if (!placeable || !currentDroppable || !shipMoved) {
             // put back to place
-            putShipBackToPlace(gameboard, shipParent, ship, length, orientation, x, y);
+            putShipBackToPlace(gameboardUI, shipParent, ship, length, orientation, x, y);
         }
         ship.style.left = 0;
         ship.style.top = 0;
@@ -151,7 +149,6 @@ function moveShip(ship, gameboard, droppable, length, orientation, gameboardMode
 
 export function rotateShipFunction(e, gameboardUI, gameboardModel) {
     const ship = e.target;
-    console.log(e);
     let { length, orientation, id } = ship.dataset;
     const shipParent = ship.parentNode;
     let { x, y } = shipParent.dataset;
