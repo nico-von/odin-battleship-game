@@ -184,6 +184,14 @@ export function startGameFunction(e, userGameboardUI, rivalGameboardUI, playButt
     userGameboardParentNode.replaceChild(userGameboardUIClone, userGameboardUI);
     rivalGameboardUI.removeChild(playButton);
     rivalGameboardUI.classList.remove("awaiting-placement");
-
+    rivalGameboardUI.addEventListener("click",e => gameplayEventListener(e));
     e.preventDefault();
+}
+
+function gameplayEventListener(e) {
+    console.log("Im to be attacked");
+};
+
+function getRandomNumber() {
+    return Math.round(Math.random() * 1);
 }
