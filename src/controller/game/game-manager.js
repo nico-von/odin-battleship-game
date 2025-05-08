@@ -45,7 +45,7 @@ function enableGameboardEvents() {
 
         switch(target.className) {
             case 'play-button':
-                startGameFunction(e, userGameboardUI, rivalGameboardUI);
+                startGameFunction(e, userGameboardUI, rivalGameboardUI, playButton);
                 break;
         }
     })

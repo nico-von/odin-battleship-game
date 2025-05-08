@@ -177,6 +177,13 @@ export function rotateShipFunction(e, gameboardUI, gameboardModel) {
 
 }
 
-export function startGameFunction(e) {
+export function startGameFunction(e, userGameboardUI, rivalGameboardUI, playButton) {
+    //clone userGameboardUi
+    const userGameboardUIClone = userGameboardUI.cloneNode(true);
+    const userGameboardParentNode = userGameboardUI.parentNode;
+    userGameboardParentNode.replaceChild(userGameboardUIClone, userGameboardUI);
+    rivalGameboardUI.removeChild(playButton);
+    rivalGameboardUI.classList.remove("awaiting-placement");
+
     e.preventDefault();
 }
