@@ -11,4 +11,4 @@ main.append(userGameboardUI, rivalGameboardUI);
 // placeShip(userGameboard, {length: 2}, "h", 3, 3);
 // placeShip(userGameboard, {length: 3}, "v", 4, 5);
 
-export { main, userGameboardUI, rivalGameboardUI as oppGameboardUI};
+export { main, userGameboardUI, rivalGameboardUI};

@@ -2,6 +2,8 @@
     box-sizing: border-box;
     margin: 0;
     padding: 0;
+    --awaiting-colour: rgba(121, 102, 102, 0.726);
+    --awaiting-colour-text: rgb(24, 19, 19);
 }
 
 body {
@@ -89,4 +91,25 @@ table {
 .ship-on-droppable {
     background: rgba(255, 255, 255, 0);
     border: rgba(255, 255, 255, 0);
+}
+
+.awaiting-placement {
+    position: relative;
+    color: var(--awaiting-colour-text);
+}
+
+.awaiting-placement table {
+    opacity: 0.3;
+}
+
+.awaiting-placement .battlefield-cell {
+    border-color: var(--awaiting-colour);
+}
+
+.play-button {
+    position: absolute;
+    top: 45%;
+    left: 0;
+    font-size: 1.5rem;
+    padding: 0.2rem 0.5rem;
 }
