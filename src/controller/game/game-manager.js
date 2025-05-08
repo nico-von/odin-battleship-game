@@ -2,7 +2,7 @@ import { userShips, rivalShips } from "./ships";
 import { userGameboard, rivalGameboard } from "./gameboards";
 import { userGameboardUI, rivalGameboardUI } from "../../view/navigation/main";
 import { placeShip } from "../../view/gameboard/gameboard";
-import { rotateShipFunction, shipDragFunction } from "./events";
+import { rotateShipFunction, shipDragFunction, startGameFunction } from "./events";
 import { playButton } from "../../view/gameboard/play-button";
 
 export async function initialiseGame() {
@@ -16,26 +16,36 @@ export async function initialiseGame() {
         const {ship, orientation, x, y} = placedShip;
         placeShip(userGameboardUI, ship, orientation, x, y);
     }
-    enableEvents(userGameboardUI, userGameboard);
+    enableGameboardEvents();
 }
 
-function enableEvents(gameboardUI, gameboardModel) {
-    gameboardUI.addEventListener('mousedown', (e) => {
+function enableGameboardEvents() {
+    userGameboardUI.addEventListener('mousedown', (e) => {
         let target = e.target;
         
         switch(target.className) {
             case 'ship':
-                shipDragFunction(e, gameboardUI, gameboardModel);
+                shipDragFunction(e, userGameboardUI, userGameboard);
                 break;
         }
     })
 
-    gameboardUI.addEventListener('dblclick', (e) => {
+    userGameboardUI.addEventListener('dblclick', (e) => {
         let target = e.target;
 
         switch(target.className) {
             case 'ship':
-                rotateShipFunction(e, gameboardUI, gameboardModel);
+                rotateShipFunction(e, userGameboardUI, userGameboard);
+                break;
+        }
+    })
+
+    rivalGameboardUI.addEventListener('click', (e) => {
+        let target = e.target;
+
+        switch(target.className) {
+            case 'play-button':
+                startGameFunction(e, userGameboardUI, rivalGameboardUI);
                 break;
         }
     })

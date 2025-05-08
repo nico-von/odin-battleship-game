@@ -176,3 +176,7 @@ export function rotateShipFunction(e, gameboardUI, gameboardModel) {
     }
 
 }
+
+export function startGameFunction(e) {
+    e.preventDefault();
+}
