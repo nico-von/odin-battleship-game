@@ -16,7 +16,7 @@ export function startGameFunction(e, userGameboardUI, rivalGameboardUI, userGame
 
     rivalGameboardUI.addEventListener("click", e => rivalHitListener(e));
 
-    isUserTurn = getRandomNumber() === 0;
+    isUserTurn = getRandomNumber(1) === 0;
     // this below centralises the gameplay, this will allow future player to player battles.
     uGameboard = userGameboard;
     rGameboard = rivalGameboard;
@@ -32,21 +32,41 @@ function attackUser() {
         return;
     }
     console.log("user Hit");
-    isUserTurn = true;
     uGameboardUI.dispatchEvent(new CustomEvent("receiveattack", {
         bubbles: true,
         cancelable: false,
         detail: {
-            x: 0,
-            y: 0,
+            x: getRandomNumber(uGameboard.width - 1),
+            y: getRandomNumber(uGameboard.height - 1),
             gameboard: uGameboard,
         }
     }));
 }
 
+function hit(x, y, gameboard) {
+    const coordinate = gameboard.hit(x, y);
+    if (coordinate.validHit) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
 function gamePlayManager(e) {
-    console.log(e.detail);
+    const { x, y, gameboard } = e.detail;
+    const isAttackValid = hit(x, y, gameboard);
+    console.log(isAttackValid);
+    
+    if (!isAttackValid && !isUserTurn) {
+        attackUser();
+    }
+    if (!isAttackValid) {
+        return;
+    };
+
+    isUserTurn = !isUserTurn;
     attackUser();
+    return;
 }
 
 function rivalHitListener(e) {
@@ -64,7 +84,6 @@ function rivalHitListener(e) {
     y = Number(y);
 
     console.log("rival Hit");
-    isUserTurn = false;
     rGameboardUI.dispatchEvent(new CustomEvent("receiveattack", {
         bubbles: true,
         cancelable: false,
@@ -76,6 +95,6 @@ function rivalHitListener(e) {
     }));
 }
 
-function getRandomNumber() {
-    return Math.round(Math.random() * 1);
+function getRandomNumber(n) {
+    return Math.round(Math.random() * n);
 }

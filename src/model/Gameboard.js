@@ -231,16 +231,17 @@ export class Gameboard {
     hit(x, y) {
         let coordinate = this.grid[y][x];
         if (coordinate.hit) {
-            return;
+            return {coordinate, validHit: false};
         }
         coordinate.hit = true;
         if (coordinate.miss) {
-            return;
+            return {coordinate, validHit: true};
         }
         coordinate.ship.hit();
         if (coordinate.ship.isSunk()) {
             this.shipsSunk += 1;
         }
+        return {coordinate, validHit: true};
     }
 
     get allShipsSunk() {
