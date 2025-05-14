@@ -121,3 +121,14 @@ table {
 .ship-hit {
     background-color: rgb(53, 11, 88);
 }
+
+.final-div {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.final-div h1{
+    font-size: 5rem;
+}

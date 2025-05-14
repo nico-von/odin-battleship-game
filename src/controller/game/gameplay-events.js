@@ -1,9 +1,15 @@
+import { createScoreDiv } from "../../view/ui-score/score";
+import { main } from "../../view/navigation/main";
+import { createFinalScreen, makeNewGameButton } from "../../view/ui-score/finalscreen";
 
 let isUserTurn = false;
 let rGameboard = null;
 let uGameboard = null;
 let uGameboardUI = null;
 let rGameboardUI = null;
+let uScoreDiv = createScoreDiv();
+let rScoreDiv = createScoreDiv();
+
 
 export function startGameFunction(e, userGameboardUI, rivalGameboardUI, userGameboard, rivalGameboard, playButton) {
     //clone userGameboardUi to lock it
@@ -22,8 +28,16 @@ export function startGameFunction(e, userGameboardUI, rivalGameboardUI, userGame
     rGameboard = rivalGameboard;
     uGameboardUI = userGameboardUIClone;
     rGameboardUI = rivalGameboardUI;
+
+    rGameboardUI.appendChild(uScoreDiv);
+    uGameboardUI.appendChild(rScoreDiv);
+
+    uScoreDiv.querySelector(".ship-remain-count").textContent = uGameboard.placedShips.length;
+    rScoreDiv.querySelector(".ship-remain-count").textContent = rGameboard.placedShips.length;
+
     document.body.addEventListener("receiveattack", e => gamePlayManager(e));
-    attackUser();
+    // attackUser();
+    gameEnd(false);
     e.preventDefault();
 }
 
@@ -38,9 +52,6 @@ function attackUser() {
     if (isUserTurn) {
         return;
     }
-    // delay 
-
-    console.log("user Hit");
     const aiAttack = getAiAttack();
     const { x, y } = aiAttack;
 
@@ -62,8 +73,8 @@ function hit(x, y, gameboard) {
     const allShipsSunk = gameboard.allShipsSunk;
 
     if (coordinate.validHit) {
-        return { 
-            isAttackValid: true, 
+        return {
+            isAttackValid: true,
             isAttackMiss: missed,
             attackSunkShip: !missed ? coordinate.coordinate.ship.isSunk() : false,
             allShipsSunk: allShipsSunk
@@ -80,7 +91,6 @@ function paintHit(x, y, isAttackMiss, gameboardUI) {
 function gamePlayManager(e) {
     const { x, y, gameboard, gameboardUI } = e.detail;
     const attack = hit(x, y, gameboard);
-    console.log(attack.isAttackValid);
 
     if (!attack.isAttackValid && !isUserTurn) {
         attackUser();
@@ -89,8 +99,17 @@ function gamePlayManager(e) {
         return;
     };
 
+    if (attack.isAttackValid) {
+        const shipSunkSpan = gameboardUI.querySelector(".ship-sunk-count");
+        const shipRemainSpan = gameboardUI.querySelector(".ship-remain-count");
+        let shipsSunk = Number(shipSunkSpan.textContent);
+        let shipsRemain = Number(shipRemainSpan.textContent);
+        shipSunkSpan.textContent = attack.attackSunkShip ? shipsSunk + 1 : shipsSunk;
+        shipRemainSpan.textContent = attack.attackSunkShip ? shipsRemain - 1 : shipsRemain;
+    }
+
     if (attack.allShipsSunk) {
-        alert("Game ended");
+        gameEnd(gameboardUI !== uGameboardUI);
     }
     paintHit(x, y, attack.isAttackMiss, gameboardUI);
     isUserTurn = !isUserTurn;
@@ -113,7 +132,6 @@ function rivalHitListener(e) {
     x = Number(x);
     y = Number(y);
 
-    console.log("rival Hit");
     rGameboardUI.dispatchEvent(new CustomEvent("receiveattack", {
         bubbles: true,
         cancelable: false,
@@ -128,4 +146,12 @@ function rivalHitListener(e) {
 
 function getRandomNumber(n) {
     return Math.round(Math.random() * n);
+}
+
+function gameEnd(isUserWinner) {
+    main.textContent = "";
+    const divHolder = document.createElement("div");
+    divHolder.append(createFinalScreen(isUserWinner), makeNewGameButton());
+    divHolder.classList.add("final-div");
+    main.append(divHolder);
 }
