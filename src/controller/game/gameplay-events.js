@@ -27,17 +27,29 @@ export function startGameFunction(e, userGameboardUI, rivalGameboardUI, userGame
     e.preventDefault();
 }
 
+function getAiAttack() {
+    return {
+        x: getRandomNumber(uGameboard.width - 1),
+        y: getRandomNumber(uGameboard.height - 1)
+    };
+}
+
 function attackUser() {
     if (isUserTurn) {
         return;
     }
+    // delay 
+
     console.log("user Hit");
+    const aiAttack = getAiAttack();
+    const { x, y } = aiAttack;
+
     uGameboardUI.dispatchEvent(new CustomEvent("receiveattack", {
         bubbles: true,
         cancelable: false,
         detail: {
-            x: getRandomNumber(uGameboard.width - 1),
-            y: getRandomNumber(uGameboard.height - 1),
+            x,
+            y,
             gameboard: uGameboard,
             gameboardUI: uGameboardUI,
         }
@@ -46,22 +58,30 @@ function attackUser() {
 
 function hit(x, y, gameboard) {
     const coordinate = gameboard.hit(x, y);
+    const missed = coordinate.coordinate.miss;
+    const allShipsSunk = gameboard.allShipsSunk;
+
     if (coordinate.validHit) {
-        return {isAttackValid: true, isAttackMiss: coordinate.coordinate.miss};
+        return { 
+            isAttackValid: true, 
+            isAttackMiss: missed,
+            attackSunkShip: !missed ? coordinate.coordinate.ship.isSunk() : false,
+            allShipsSunk: allShipsSunk
+        };
     } else {
-        return {isAttackValid: false};
+        return { isAttackValid: false };
     }
 }
 
 function paintHit(x, y, isAttackMiss, gameboardUI) {
-    gameboardUI.querySelector(`div[data-x="${x}"][data-y="${y}"]`).classList.add(isAttackMiss? "cell-hit": "ship-hit");
+    gameboardUI.querySelector(`div[data-x="${x}"][data-y="${y}"]`).classList.add(isAttackMiss ? "cell-hit" : "ship-hit");
 }
 
 function gamePlayManager(e) {
     const { x, y, gameboard, gameboardUI } = e.detail;
     const attack = hit(x, y, gameboard);
     console.log(attack.isAttackValid);
-    
+
     if (!attack.isAttackValid && !isUserTurn) {
         attackUser();
     }
@@ -69,9 +89,13 @@ function gamePlayManager(e) {
         return;
     };
 
+    if (attack.allShipsSunk) {
+        alert("Game ended");
+    }
     paintHit(x, y, attack.isAttackMiss, gameboardUI);
     isUserTurn = !isUserTurn;
-    attackUser();
+    // ai Attack
+    setTimeout(attackUser, getRandomNumber(2000));
     return;
 }
 

@@ -115,9 +115,9 @@ table {
 }
 
 .cell-hit {
-    background-color: rgb(66, 66, 66);
+    background-color: rgb(139, 129, 129);
 }
 
 .ship-hit {
-    background-color: rgb(23, 23, 68);
+    background-color: rgb(53, 11, 88);
 }
