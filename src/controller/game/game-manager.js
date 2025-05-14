@@ -2,7 +2,8 @@ import { userShips, rivalShips } from "./ships";
 import { userGameboard, rivalGameboard } from "./gameboards";
 import { userGameboardUI, rivalGameboardUI } from "../../view/navigation/main";
 import { placeShip } from "../../view/gameboard/gameboard";
-import { rotateShipFunction, shipDragFunction, startGameFunction } from "./events";
+import { rotateShipFunction, shipDragFunction } from "./placement-events";
+import { startGameFunction } from "./gameplay-events";
 import { playButton } from "../../view/gameboard/play-button";
 
 export async function initialiseGame() {
@@ -45,7 +46,7 @@ function enableGameboardEvents() {
 
         switch(target.className) {
             case 'play-button':
-                startGameFunction(e, userGameboardUI, rivalGameboardUI, playButton);
+                startGameFunction(e, userGameboardUI, rivalGameboardUI, userGameboard, rivalGameboard, playButton);
                 break;
         }
     })
