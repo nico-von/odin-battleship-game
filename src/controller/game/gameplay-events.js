@@ -39,6 +39,7 @@ function attackUser() {
             x: getRandomNumber(uGameboard.width - 1),
             y: getRandomNumber(uGameboard.height - 1),
             gameboard: uGameboard,
+            gameboardUI: uGameboardUI,
         }
     }));
 }
@@ -46,24 +47,29 @@ function attackUser() {
 function hit(x, y, gameboard) {
     const coordinate = gameboard.hit(x, y);
     if (coordinate.validHit) {
-        return true;
+        return {isAttackValid: true, isAttackMiss: coordinate.coordinate.miss};
     } else {
-        return false;
+        return {isAttackValid: false};
     }
 }
 
+function paintHit(x, y, isAttackMiss, gameboardUI) {
+    gameboardUI.querySelector(`div[data-x="${x}"][data-y="${y}"]`).classList.add(isAttackMiss? "cell-hit": "ship-hit");
+}
+
 function gamePlayManager(e) {
-    const { x, y, gameboard } = e.detail;
-    const isAttackValid = hit(x, y, gameboard);
-    console.log(isAttackValid);
+    const { x, y, gameboard, gameboardUI } = e.detail;
+    const attack = hit(x, y, gameboard);
+    console.log(attack.isAttackValid);
     
-    if (!isAttackValid && !isUserTurn) {
+    if (!attack.isAttackValid && !isUserTurn) {
         attackUser();
     }
-    if (!isAttackValid) {
+    if (!attack.isAttackValid) {
         return;
     };
 
+    paintHit(x, y, attack.isAttackMiss, gameboardUI);
     isUserTurn = !isUserTurn;
     attackUser();
     return;
@@ -91,6 +97,7 @@ function rivalHitListener(e) {
             x,
             y,
             gameboard: rGameboard,
+            gameboardUI: rGameboardUI
         }
     }));
 }

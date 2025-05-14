@@ -113,3 +113,11 @@ table {
     font-size: 1.5rem;
     padding: 0.2rem 0.5rem;
 }
+
+.cell-hit {
+    background-color: rgb(66, 66, 66);
+}
+
+.ship-hit {
+    background-color: rgb(23, 23, 68);
+}
