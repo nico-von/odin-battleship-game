@@ -2,8 +2,10 @@ import { setTDClass, setOnAffectedCells, placeShip } from "../../view/gameboard/
 
 const DROPPABLE_TD_CLASS = "cell-droppable"
 const ABOVE_DROPPABLE = "ship-on-droppable"
+const RECEIVE_ATTACK_EVENT = new CustomEvent("receiveattack", { bubbles: true, cancelable: false });
 
 let currentDroppable = null;
+let isUserFirstToAttack = false;
 
 function getPlaceableXY(droppable, orientation, offsetX, offsetY) {
     let x = droppable.dataset.x;
@@ -184,13 +186,20 @@ export function startGameFunction(e, userGameboardUI, rivalGameboardUI, playButt
     userGameboardParentNode.replaceChild(userGameboardUIClone, userGameboardUI);
     rivalGameboardUI.removeChild(playButton);
     rivalGameboardUI.classList.remove("awaiting-placement");
-    rivalGameboardUI.addEventListener("click",e => gameplayEventListener(e));
+    rivalGameboardUI.addEventListener("click", e => gameplayEventListener(e));
+    isUserFirstToAttack = getRandomNumber() === 0;
+    // this below centralises the gameplay, this will allow future player to player battles.
+    document.body.addEventListener("receiveattack", e => gamePlayManager(e));
     e.preventDefault();
 }
 
+function gamePlayManager(e) {
+    console.log(e.target);
+}
+
 function gameplayEventListener(e) {
-    console.log("Im to be attacked");
-};
+    e.currentTarget.dispatchEvent(RECEIVE_ATTACK_EVENT);
+}
 
 function getRandomNumber() {
     return Math.round(Math.random() * 1);
