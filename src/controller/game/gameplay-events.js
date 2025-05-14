@@ -36,8 +36,7 @@ export function startGameFunction(e, userGameboardUI, rivalGameboardUI, userGame
     rScoreDiv.querySelector(".ship-remain-count").textContent = rGameboard.placedShips.length;
 
     document.body.addEventListener("receiveattack", e => gamePlayManager(e));
-    // attackUser();
-    gameEnd(false);
+    attackUser();
     e.preventDefault();
 }
 

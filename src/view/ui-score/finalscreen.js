@@ -13,8 +13,13 @@ export function makeNewGameButton() {
     newGameButton.textContent = "Play Again";
     newGameButton.addEventListener("click", e => {
         e.preventDefault();
-        main.textContent = "";
-        initialiseGame();
+        // a more graceful reset process can be added but
+        // dumb self had forgotten to have it considered
+        // and since I am lacking time
+        // I am forcing a reload instead for a new game.
+        // Will make a more graceful reset if ever I come back
+        // to this project in the future.
+        window.location.reload();
     })
     return newGameButton;
 }
